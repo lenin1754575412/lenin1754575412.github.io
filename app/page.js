@@ -227,7 +227,7 @@ export default function Home() {
                     <span>proyectos web.</span>
                   </h1>
                   <p>
-                    Soy Lenin Johan Cojal Valle. Aqui presento mis proyectos como episodios:
+                    Soy Lenin Johan Cojal Valle. Aqui presento mis servicios y proyectos:
                     paginas web, sistemas, portafolios y trabajos hechos con Next.js, React,
                     GitHub y Vercel.
                   </p>
@@ -279,29 +279,65 @@ export default function Home() {
             {section === "servicios" && (
               <div>
                 <span className="eyebrow">Servicios</span>
-                <h2>Lo que puedo crear.</h2>
+                <h2>Lo que puedo crear para ti.</h2>
                 <p>
-                  Creo paginas web modernas, portafolios, sistemas basicos y proyectos
-                  listos para publicar en GitHub y Vercel.
+                  Por mientras ofrezco servicios de paginas web, sistemas de ventas,
+                  portafolios, tiendas, soporte y configuracion de sistemas.
                 </p>
 
                 <div className="cards">
                   <div className="card">
-                    <div className="icon">01</div>
-                    <h3>Landing Pages</h3>
-                    <p>Paginas para negocios, productos, servicios o instituciones.</p>
+                    <div className="icon">WEB</div>
+                    <h3>Paginas Web</h3>
+                    <p>
+                      Paginas modernas para negocios, colegios, restaurantes,
+                      tiendas, motos, turismo, eventos o presentaciones personales.
+                    </p>
                   </div>
 
                   <div className="card">
-                    <div className="icon">02</div>
+                    <div className="icon">VEN</div>
+                    <h3>Sistemas de Ventas</h3>
+                    <p>
+                      Sistemas basicos para registrar productos, clientes, ventas,
+                      inventario, reportes y control de una tienda.
+                    </p>
+                  </div>
+
+                  <div className="card">
+                    <div className="icon">OS</div>
+                    <h3>Sistemas Operativos</h3>
+                    <p>
+                      Ayuda con instalacion, configuracion, limpieza y optimizacion
+                      de Windows, programas basicos y herramientas de trabajo.
+                    </p>
+                  </div>
+
+                  <div className="card">
+                    <div className="icon">POR</div>
                     <h3>Portafolios</h3>
-                    <p>Portafolios personales con proyectos, contacto y diseno profesional.</p>
+                    <p>
+                      Portafolios personales como este, con proyectos, contacto,
+                      diseno profesional, GitHub y despliegue en Vercel.
+                    </p>
                   </div>
 
                   <div className="card">
-                    <div className="icon">03</div>
-                    <h3>Sistemas Web</h3>
-                    <p>Sistemas basicos para ventas, turismo, tiendas y administracion.</p>
+                    <div className="icon">CAT</div>
+                    <h3>Tiendas y Catalogos</h3>
+                    <p>
+                      Catalogos web para mostrar productos, precios, descripcion,
+                      imagenes y contacto por correo o redes sociales.
+                    </p>
+                  </div>
+
+                  <div className="card">
+                    <div className="icon">TEC</div>
+                    <h3>Soporte Tecnico</h3>
+                    <p>
+                      Configuracion de proyectos, GitHub, Vercel, VS Code,
+                      instalacion de Node.js y correccion de errores.
+                    </p>
                   </div>
                 </div>
               </div>
