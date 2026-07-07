@@ -1,4 +1,3 @@
-﻿import "./globals.css";
 
 export const metadata = {
   title: "Lenin Johan Cojal Valle | Portafolio",
@@ -8,7 +7,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body style={{ margin: 0 }}>{children}</body>
     </html>
   );
 }

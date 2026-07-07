@@ -1,74 +1,26 @@
-﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 
 const GITHUB_USER = "lenin1754575412";
 
-const fallbackProjects = [
-  {
-    id: "local-1",
-    name: "Portafolio Personal",
-    description: "Mi portafolio profesional creado con Next.js, React y GitHub.",
-    url: "https://github.com/lenin1754575412/lenin1754575412.github.io",
-    web: "",
-    language: "Next.js",
-  },
-  {
-    id: "local-2",
-    name: "Página de Motos",
-    description: "Proyecto web moderno enfocado en motos, diseño visual y secciones informativas.",
-    url: "https://github.com/lenin1754575412",
-    web: "",
-    language: "Web",
-  },
-  {
-    id: "local-3",
-    name: "Sistema de Ventas",
-    description: "Sistema pensado para ferretería, ropa y electrodomésticos.",
-    url: "https://github.com/lenin1754575412",
-    web: "",
-    language: "Sistema",
-  },
-];
-
 export default function Home() {
   const [section, setSection] = useState("inicio");
-  const [projects, setProjects] = useState(fallbackProjects);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [projectPage, setProjectPage] = useState(1);
-
-  const perPage = 6;
 
   async function cargarProyectos() {
     try {
       setLoading(true);
-
-      const res = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`
-      );
-
+      const res = await fetch("https://api.github.com/users/" + GITHUB_USER + "/repos?sort=updated&per_page=100");
       const data = await res.json();
 
-      if (!Array.isArray(data)) {
-        setProjects(fallbackProjects);
-        return;
+      if (Array.isArray(data)) {
+        setProjects(data.filter((repo) => !repo.fork));
       }
-
-      const repos = data
-        .filter((repo) => !repo.fork)
-        .map((repo) => ({
-          id: repo.id,
-          name: repo.name,
-          description: repo.description || "Proyecto público subido a GitHub.",
-          url: repo.html_url,
-          web: repo.homepage || "",
-          language: repo.language || "GitHub",
-        }));
-
-      setProjects(repos.length > 0 ? repos : fallbackProjects);
     } catch (error) {
-      console.log("Error cargando proyectos:", error);
-      setProjects(fallbackProjects);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -76,223 +28,320 @@ export default function Home() {
 
   useEffect(() => {
     cargarProyectos();
-
-    const timer = setInterval(() => {
-      cargarProyectos();
-    }, 60000);
-
-    return () => clearInterval(timer);
   }, []);
 
-  const totalPages = Math.max(1, Math.ceil(projects.length / perPage));
+  const colors = {
+    bg: "#050816",
+    card: "rgba(15, 23, 42, 0.88)",
+    card2: "rgba(2, 6, 23, 0.84)",
+    blue: "#38bdf8",
+    white: "#ffffff",
+    muted: "#cbd5e1",
+    line: "rgba(255,255,255,0.12)"
+  };
 
-  const visibleProjects = useMemo(() => {
-    const start = (projectPage - 1) * perPage;
-    return projects.slice(start, start + perPage);
-  }, [projects, projectPage]);
+  const styles = {
+    main: {
+      minHeight: "100vh",
+      background: "radial-gradient(circle at top left, rgba(56,189,248,0.30), transparent 34%), radial-gradient(circle at bottom right, rgba(37,99,235,0.32), transparent 35%), linear-gradient(135deg, #050816, #020617)",
+      color: colors.white,
+      fontFamily: "Arial, Helvetica, sans-serif"
+    },
+    nav: {
+      padding: "16px 7%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 20,
+      flexWrap: "wrap",
+      background: "rgba(5,8,22,0.94)",
+      borderBottom: "1px solid " + colors.line,
+      position: "sticky",
+      top: 0,
+      zIndex: 20
+    },
+    brand: {
+      display: "flex",
+      alignItems: "center",
+      gap: 13
+    },
+    logoImg: {
+      width: 58,
+      height: 58,
+      borderRadius: 18,
+      boxShadow: "0 0 35px rgba(56,189,248,0.35)"
+    },
+    menu: {
+      display: "flex",
+      gap: 10,
+      flexWrap: "wrap"
+    },
+    menuBtn: {
+      padding: "10px 15px",
+      borderRadius: 999,
+      border: "1px solid " + colors.line,
+      background: "rgba(15,23,42,0.8)",
+      color: colors.white,
+      fontWeight: "bold",
+      cursor: "pointer"
+    },
+    active: {
+      background: colors.blue,
+      color: "#020617",
+      border: "1px solid " + colors.blue
+    },
+    screen: {
+      minHeight: "calc(100vh - 90px)",
+      padding: "55px 7%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    panel: {
+      width: "100%",
+      maxWidth: 1200,
+      background: colors.card,
+      border: "1px solid " + colors.line,
+      borderRadius: 34,
+      padding: 42,
+      boxShadow: "0 35px 110px rgba(0,0,0,0.48)"
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+      gap: 32,
+      alignItems: "center"
+    },
+    tag: {
+      display: "inline-block",
+      padding: "10px 16px",
+      borderRadius: 999,
+      background: "rgba(56,189,248,0.14)",
+      border: "1px solid rgba(56,189,248,0.35)",
+      color: colors.blue,
+      fontWeight: "bold",
+      marginBottom: 18
+    },
+    title: {
+      fontSize: "clamp(36px, 6vw, 58px)",
+      lineHeight: 1.05,
+      margin: "0 0 18px"
+    },
+    h2: {
+      color: colors.blue,
+      fontSize: "clamp(32px, 5vw, 42px)",
+      margin: "0 0 18px"
+    },
+    p: {
+      color: colors.muted,
+      fontSize: 18,
+      lineHeight: 1.7
+    },
+    button: {
+      padding: "14px 20px",
+      borderRadius: 14,
+      fontWeight: "bold",
+      cursor: "pointer",
+      fontSize: 16,
+      marginRight: 12,
+      marginTop: 12
+    },
+    primary: {
+      background: colors.blue,
+      color: "#020617",
+      border: "none"
+    },
+    secondary: {
+      background: "transparent",
+      color: colors.white,
+      border: "1px solid " + colors.blue
+    },
+    profile: {
+      textAlign: "center",
+      padding: 36,
+      borderRadius: 30,
+      background: colors.card2,
+      border: "1px solid " + colors.line
+    },
+    bigLogo: {
+      width: 180,
+      height: 180,
+      borderRadius: 35,
+      objectFit: "contain",
+      marginBottom: 20,
+      boxShadow: "0 0 70px rgba(56,189,248,0.30)"
+    },
+    cards: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+      gap: 18,
+      marginTop: 30
+    },
+    card: {
+      padding: 24,
+      borderRadius: 22,
+      background: colors.card2,
+      border: "1px solid " + colors.line
+    },
+    projectCard: {
+      minHeight: 230,
+      padding: 24,
+      borderRadius: 23,
+      background: colors.card2,
+      border: "1px solid " + colors.line,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between"
+    },
+    badge: {
+      display: "inline-block",
+      padding: "7px 12px",
+      borderRadius: 999,
+      background: "rgba(56,189,248,0.12)",
+      color: colors.blue,
+      border: "1px solid rgba(56,189,248,0.25)",
+      fontSize: 13,
+      fontWeight: "bold",
+      marginBottom: 12
+    },
+    link: {
+      display: "inline-block",
+      marginTop: 14,
+      padding: "10px 13px",
+      borderRadius: 10,
+      background: colors.blue,
+      color: "#020617",
+      fontWeight: "bold",
+      textDecoration: "none"
+    }
+  };
 
-  function cambiarSeccion(nombre) {
-    setSection(nombre);
-    setProjectPage(1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  function menuButton(name, label) {
+    return (
+      <button
+        style={section === name ? { ...styles.menuBtn, ...styles.active } : styles.menuBtn}
+        onClick={() => setSection(name)}
+      >
+        {label}
+      </button>
+    );
   }
 
   return (
-    <main>
-      <nav className="navbar">
-        <div className="brand">
-          <div className="brandIcon">LJ</div>
+    <main style={styles.main}>
+      <nav style={styles.nav}>
+        <div style={styles.brand}>
+          <img src="/logo.svg" alt="Logo Lenin Johan" style={styles.logoImg} />
           <div>
-            <h2>Lenin Johan</h2>
-            <span>Portafolio Web</span>
+            <h2 style={{ margin: 0 }}>Lenin Johan</h2>
+            <span style={{ color: "#94a3b8" }}>Portafolio Web</span>
           </div>
         </div>
 
-        <div className="menu">
-          <button onClick={() => cambiarSeccion("inicio")} className={section === "inicio" ? "active" : ""}>Inicio</button>
-          <button onClick={() => cambiarSeccion("sobre")} className={section === "sobre" ? "active" : ""}>Sobre mí</button>
-          <button onClick={() => cambiarSeccion("habilidades")} className={section === "habilidades" ? "active" : ""}>Habilidades</button>
-          <button onClick={() => cambiarSeccion("proyectos")} className={section === "proyectos" ? "active" : ""}>Proyectos</button>
-          <button onClick={() => cambiarSeccion("contacto")} className={section === "contacto" ? "active" : ""}>Contacto</button>
+        <div style={styles.menu}>
+          {menuButton("inicio", "Inicio")}
+          {menuButton("sobre", "Sobre m?")}
+          {menuButton("habilidades", "Habilidades")}
+          {menuButton("proyectos", "Proyectos")}
+          {menuButton("contacto", "Contacto")}
         </div>
       </nav>
 
-      <section className="screen">
-        <div className="panel">
+      <section style={styles.screen}>
+        <div style={styles.panel}>
           {section === "inicio" && (
-            <div className="heroGrid">
+            <div style={styles.grid}>
               <div>
-                <span className="tag">Portafolio Profesional</span>
-                <h1>Hola, soy <b>Lenin Johan Cojal Valle</b></h1>
-                <p>
-                  Desarrollo páginas web modernas, portafolios, sistemas y proyectos
-                  usando HTML, CSS, JavaScript, React, Next.js y GitHub.
+                <span style={styles.tag}>Portafolio Profesional</span>
+                <h1 style={styles.title}>
+                  Hola, soy <span style={{ color: colors.blue }}>Lenin Johan Cojal Valle</span>
+                </h1>
+                <p style={styles.p}>
+                  Desarrollo p?ginas web modernas, portafolios, sistemas y proyectos usando HTML, CSS, JavaScript, React, Next.js y GitHub.
                 </p>
-
-                <div className="heroStats">
-                  <div>
-                    <b>{projects.length}+</b>
-                    <span>Proyectos</span>
-                  </div>
-                  <div>
-                    <b>Web</b>
-                    <span>Diseño moderno</span>
-                  </div>
-                  <div>
-                    <b>GitHub</b>
-                    <span>Automático</span>
-                  </div>
-                </div>
-
-                <div className="buttons">
-                  <button className="btnPrimary" onClick={() => cambiarSeccion("proyectos")}>
-                    Ver proyectos
-                  </button>
-                  <button className="btnSecondary" onClick={() => cambiarSeccion("contacto")}>
-                    Contactarme
-                  </button>
-                </div>
+                <button style={{ ...styles.button, ...styles.primary }} onClick={() => setSection("proyectos")}>
+                  Ver proyectos
+                </button>
+                <button style={{ ...styles.button, ...styles.secondary }} onClick={() => setSection("contacto")}>
+                  Contactarme
+                </button>
               </div>
 
-              <div className="profileCard">
-                <div className="avatar">LJ</div>
-                <h3>Lenin Johan Cojal Valle</h3>
-                <p>Frontend Developer</p>
-                <small>@{GITHUB_USER}</small>
+              <div style={styles.profile}>
+                <img src="/logo.svg" alt="Logo Lenin Johan" style={styles.bigLogo} />
+                <h2 style={{ margin: 0 }}>Lenin Johan Cojal Valle</h2>
+                <p style={styles.p}>Frontend Developer</p>
+                <small style={{ color: "#94a3b8" }}>@{GITHUB_USER}</small>
               </div>
             </div>
           )}
 
           {section === "sobre" && (
             <div>
-              <span className="tag">Sobre mí</span>
-              <h2>¿Quién soy?</h2>
-              <p>
-                Soy Lenin Johan Cojal Valle. Estoy construyendo mi portafolio
-                profesional para mostrar mis proyectos, páginas web, sistemas,
-                diseños y trabajos realizados.
+              <span style={styles.tag}>Sobre m?</span>
+              <h2 style={styles.h2}>?Qui?n soy?</h2>
+              <p style={styles.p}>
+                Soy Lenin Johan Cojal Valle. Estoy construyendo mi portafolio profesional para mostrar mis proyectos, p?ginas web, sistemas, dise?os y trabajos realizados.
               </p>
 
-              <div className="infoGrid">
-                <div className="miniCard">
-                  <h3>💻 Desarrollo Web</h3>
-                  <p>Creo páginas modernas, limpias y adaptables a celular.</p>
-                </div>
-
-                <div className="miniCard">
-                  <h3>🚀 Proyectos</h3>
-                  <p>Mis proyectos públicos de GitHub aparecen automáticamente.</p>
-                </div>
-
-                <div className="miniCard">
-                  <h3>🎯 Objetivo</h3>
-                  <p>Mejorar cada día y crear proyectos más profesionales.</p>
-                </div>
+              <div style={styles.cards}>
+                <div style={styles.card}><h3>?? Desarrollo Web</h3><p style={styles.p}>Creo p?ginas modernas, limpias y adaptables a celular.</p></div>
+                <div style={styles.card}><h3>?? Proyectos</h3><p style={styles.p}>Mis proyectos p?blicos de GitHub aparecen autom?ticamente.</p></div>
+                <div style={styles.card}><h3>?? Objetivo</h3><p style={styles.p}>Mejorar cada d?a y crear proyectos m?s profesionales.</p></div>
               </div>
             </div>
           )}
 
           {section === "habilidades" && (
             <div>
-              <span className="tag">Tecnologías</span>
-              <h2>Mis habilidades</h2>
-              <p>Herramientas que uso para crear mis páginas y sistemas web.</p>
+              <span style={styles.tag}>Tecnolog?as</span>
+              <h2 style={styles.h2}>Mis habilidades</h2>
+              <p style={styles.p}>Herramientas que uso para crear mis p?ginas y sistemas web.</p>
 
-              <div className="skills">
-                <div className="skill">HTML</div>
-                <div className="skill">CSS</div>
-                <div className="skill">JavaScript</div>
-                <div className="skill">React</div>
-                <div className="skill">Next.js</div>
-                <div className="skill">GitHub</div>
-                <div className="skill">VS Code</div>
-                <div className="skill">Diseño Web</div>
+              <div style={styles.cards}>
+                {["HTML", "CSS", "JavaScript", "React", "Next.js", "GitHub", "VS Code", "Dise?o Web"].map((skill) => (
+                  <div key={skill} style={{ ...styles.card, textAlign: "center", fontWeight: "bold", color: colors.blue }}>{skill}</div>
+                ))}
               </div>
             </div>
           )}
 
           {section === "proyectos" && (
             <div>
-              <div className="projectsHeader">
-                <div>
-                  <span className="tag">GitHub automático</span>
-                  <h2>Mis proyectos</h2>
-                  <p>
-                    Cuando subas nuevos repositorios públicos a GitHub, aparecerán aquí
-                    automáticamente al actualizar la página.
-                  </p>
-                </div>
-
-                <button className="btnSecondary" onClick={cargarProyectos}>
-                  Actualizar
-                </button>
-              </div>
+              <span style={styles.tag}>GitHub autom?tico</span>
+              <h2 style={styles.h2}>Mis proyectos</h2>
+              <p style={styles.p}>Cuando subas nuevos repositorios p?blicos a GitHub, aparecer?n aqu? autom?ticamente.</p>
+              <button style={{ ...styles.button, ...styles.secondary }} onClick={cargarProyectos}>Actualizar</button>
 
               {loading ? (
-                <div className="loading">Cargando proyectos desde GitHub...</div>
+                <div style={styles.card}>Cargando proyectos desde GitHub...</div>
               ) : (
-                <>
-                  <div className="projectsGrid">
-                    {visibleProjects.map((project) => (
-                      <div className="projectCard" key={project.id}>
-                        <div>
-                          <span className="badge">{project.language}</span>
-                          <h3>{project.name}</h3>
-                          <p>{project.description}</p>
-                        </div>
-
-                        <div className="projectButtons">
-                          <a href={project.url} target="_blank" rel="noreferrer" className="codeBtn">
-                            Ver código
-                          </a>
-
-                          {project.web && (
-                            <a href={project.web} target="_blank" rel="noreferrer" className="webBtn">
-                              Ver página
-                            </a>
-                          )}
-                        </div>
+                <div style={styles.cards}>
+                  {projects.length === 0 && <div style={styles.card}>No se pudieron cargar proyectos, pero la p?gina funciona sin errores.</div>}
+                  {projects.map((project) => (
+                    <div key={project.id} style={styles.projectCard}>
+                      <div>
+                        <span style={styles.badge}>{project.language || "GitHub"}</span>
+                        <h3>{project.name}</h3>
+                        <p style={styles.p}>{project.description || "Proyecto p?blico subido a GitHub."}</p>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="pager">
-                    <button disabled={projectPage === 1} onClick={() => setProjectPage(projectPage - 1)}>
-                      Anterior
-                    </button>
-
-                    <span>Página {projectPage} de {totalPages}</span>
-
-                    <button disabled={projectPage === totalPages} onClick={() => setProjectPage(projectPage + 1)}>
-                      Siguiente
-                    </button>
-                  </div>
-                </>
+                      <a href={project.html_url} target="_blank" rel="noreferrer" style={styles.link}>Ver c?digo</a>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           )}
 
           {section === "contacto" && (
             <div>
-              <span className="tag">Contacto</span>
-              <h2>Contáctame</h2>
-              <p>Estos son mis datos principales para mi portafolio.</p>
+              <span style={styles.tag}>Contacto</span>
+              <h2 style={styles.h2}>Cont?ctame</h2>
 
-              <div className="contactGrid">
-                <div className="contactItem">
-                  <b>Nombre</b>
-                  <p>Lenin Johan Cojal Valle</p>
-                </div>
-
-                <div className="contactItem">
-                  <b>GitHub</b>
-                  <p>{GITHUB_USER}</p>
-                </div>
-
-                <div className="contactItem">
-                  <b>Correo</b>
-                  <p>cojalvallelenin919@gmail.com</p>
-                </div>
+              <div style={styles.cards}>
+                <div style={styles.card}><b style={{ color: colors.blue }}>Nombre</b><p style={styles.p}>Lenin Johan Cojal Valle</p></div>
+                <div style={styles.card}><b style={{ color: colors.blue }}>GitHub</b><p style={styles.p}>{GITHUB_USER}</p></div>
+                <div style={styles.card}><b style={{ color: colors.blue }}>Correo</b><p style={styles.p}>cojalvallelenin919@gmail.com</p></div>
               </div>
             </div>
           )}
