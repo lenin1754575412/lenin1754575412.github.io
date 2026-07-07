@@ -171,6 +171,24 @@ export default function Home() {
     ".card { padding: 24px; border-radius: 22px; background: rgba(2,6,23,0.82); border: 1px solid rgba(255,255,255,0.12); transition: 0.25s; }",
     ".card:hover { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 22px 55px rgba(56,189,248,0.14); }",
     ".skill { text-align: center; color: #38bdf8; font-weight: 900; font-size: 18px; }",
+
+    ".skillsSection { position: relative; }",
+    ".skillsTitle { max-width: 780px; margin-bottom: 30px; }",
+    ".skillsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 22px; margin-top: 35px; }",
+    ".skillProCard { position: relative; overflow: hidden; min-height: 210px; padding: 24px; border-radius: 26px; background: linear-gradient(145deg, rgba(2,6,23,0.95), rgba(15,23,42,0.85)); border: 1px solid rgba(56,189,248,0.18); box-shadow: 0 20px 55px rgba(0,0,0,0.25); transition: 0.35s; }",
+    ".skillProCard::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(56,189,248,0.20), transparent 38%); opacity: 0; transition: 0.35s; }",
+    ".skillProCard::after { content: ''; position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(56,189,248,0.12); right: -45px; bottom: -45px; filter: blur(4px); }",
+    ".skillProCard:hover { transform: translateY(-10px) scale(1.02); border-color: #38bdf8; box-shadow: 0 25px 70px rgba(56,189,248,0.18); }",
+    ".skillProCard:hover::before { opacity: 1; }",
+    ".skillIcon { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 18px; background: rgba(56,189,248,0.13); border: 1px solid rgba(56,189,248,0.30); color: #38bdf8; font-size: 27px; margin-bottom: 18px; position: relative; z-index: 2; animation: skillFloat 3s ease-in-out infinite; }",
+    "@keyframes skillFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }",
+    ".skillInfo { position: relative; z-index: 2; }",
+    ".skillInfo h3 { margin: 0 0 8px; color: white; font-size: 22px; }",
+    ".skillInfo p { margin: 0; color: #94a3b8; font-size: 15px; line-height: 1.5; }",
+    ".skillBar { position: relative; z-index: 2; width: 100%; height: 10px; margin-top: 20px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }",
+    ".skillBar span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #38bdf8, #2563eb); box-shadow: 0 0 20px rgba(56,189,248,0.55); animation: barLoad 1.2s ease both; }",
+    "@keyframes barLoad { from { width: 0; } }",
+    ".skillProCard small { position: relative; z-index: 2; display: inline-block; margin-top: 10px; color: #38bdf8; font-weight: 900; }",
     ".projectCard { padding: 0; overflow: hidden; min-height: 430px; display: flex; flex-direction: column; justify-content: space-between; }",
     ".projectImage { width: 100%; height: 160px; object-fit: cover; display: block; border-bottom: 1px solid rgba(255,255,255,0.12); }",
     ".projectBody { padding: 22px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }",
@@ -295,14 +313,42 @@ export default function Home() {
               )}
 
               {section === "habilidades" && (
-                <div>
+                <div className="skillsSection">
                   <span className="tag">Tecnologias</span>
-                  <h2>Mis habilidades</h2>
-                  <p>Herramientas que uso para crear mis paginas y sistemas web.</p>
 
-                  <div className="cards">
-                    {["HTML", "CSS", "JavaScript", "React", "Next.js", "GitHub", "VS Code", "Diseno Web"].map((skill) => (
-                      <div className="card skill" key={skill}>{skill}</div>
+                  <div className="skillsTitle">
+                    <h2>Mis habilidades</h2>
+                    <p>
+                      Herramientas que uso para crear paginas web modernas,
+                      portafolios, sistemas y proyectos profesionales.
+                    </p>
+                  </div>
+
+                  <div className="skillsGrid">
+                    {[
+                      { name: "HTML", icon: "??", level: "90%", desc: "Estructura de paginas web" },
+                      { name: "CSS", icon: "??", level: "85%", desc: "Diseno moderno y responsive" },
+                      { name: "JavaScript", icon: "?", level: "80%", desc: "Interaccion y logica web" },
+                      { name: "React", icon: "??", level: "75%", desc: "Componentes modernos" },
+                      { name: "Next.js", icon: "?", level: "78%", desc: "Apps web profesionales" },
+                      { name: "GitHub", icon: "??", level: "82%", desc: "Repositorios y despliegues" },
+                      { name: "VS Code", icon: "??", level: "88%", desc: "Editor de desarrollo" },
+                      { name: "Diseno Web", icon: "?", level: "84%", desc: "Interfaces limpias y bonitas" }
+                    ].map((skill) => (
+                      <div className="skillProCard" key={skill.name}>
+                        <div className="skillIcon">{skill.icon}</div>
+
+                        <div className="skillInfo">
+                          <h3>{skill.name}</h3>
+                          <p>{skill.desc}</p>
+                        </div>
+
+                        <div className="skillBar">
+                          <span style={{ width: skill.level }}></span>
+                        </div>
+
+                        <small>{skill.level}</small>
+                      </div>
                     ))}
                   </div>
                 </div>
