@@ -279,10 +279,11 @@ export default function Home() {
             {section === "servicios" && (
               <div>
                 <span className="eyebrow">Servicios</span>
-                <h2>Lo que puedo crear para ti.</h2>
+                <h2>Lo que puedo hacer.</h2>
                 <p>
-                  Por mientras ofrezco servicios de paginas web, sistemas de ventas,
-                  portafolios, tiendas, soporte y configuracion de sistemas.
+                  Estos son los servicios que puedo ofrecer por mientras:
+                  paginas web, sistemas de ventas, portafolios, catalogos,
+                  soporte tecnico y correccion de errores.
                 </p>
 
                 <div className="cards">
@@ -290,8 +291,8 @@ export default function Home() {
                     <div className="icon">WEB</div>
                     <h3>Paginas Web</h3>
                     <p>
-                      Paginas modernas para negocios, colegios, restaurantes,
-                      tiendas, motos, turismo, eventos o presentaciones personales.
+                      Creo paginas modernas para negocios, tiendas, eventos,
+                      turismo, motos, instituciones y presentaciones personales.
                     </p>
                   </div>
 
@@ -299,44 +300,44 @@ export default function Home() {
                     <div className="icon">VEN</div>
                     <h3>Sistemas de Ventas</h3>
                     <p>
-                      Sistemas basicos para registrar productos, clientes, ventas,
-                      inventario, reportes y control de una tienda.
-                    </p>
-                  </div>
-
-                  <div className="card">
-                    <div className="icon">OS</div>
-                    <h3>Sistemas Operativos</h3>
-                    <p>
-                      Ayuda con instalacion, configuracion, limpieza y optimizacion
-                      de Windows, programas basicos y herramientas de trabajo.
+                      Desarrollo sistemas basicos para registrar productos,
+                      clientes, ventas, inventario, reportes y control de una tienda.
                     </p>
                   </div>
 
                   <div className="card">
                     <div className="icon">POR</div>
-                    <h3>Portafolios</h3>
+                    <h3>Portafolios Profesionales</h3>
                     <p>
-                      Portafolios personales como este, con proyectos, contacto,
-                      diseno profesional, GitHub y despliegue en Vercel.
+                      Diseno portafolios personales con proyectos, contacto,
+                      GitHub, Vercel y un estilo profesional.
                     </p>
                   </div>
 
                   <div className="card">
                     <div className="icon">CAT</div>
-                    <h3>Tiendas y Catalogos</h3>
+                    <h3>Tiendas y Catalogos Web</h3>
                     <p>
-                      Catalogos web para mostrar productos, precios, descripcion,
-                      imagenes y contacto por correo o redes sociales.
+                      Creo catalogos para mostrar productos, precios, imagenes,
+                      descripcion y contacto para clientes.
                     </p>
                   </div>
 
                   <div className="card">
                     <div className="icon">TEC</div>
-                    <h3>Soporte Tecnico</h3>
+                    <h3>Soporte y Configuracion</h3>
                     <p>
-                      Configuracion de proyectos, GitHub, Vercel, VS Code,
-                      instalacion de Node.js y correccion de errores.
+                      Ayudo con instalacion de programas, configuracion de Windows,
+                      VS Code, Node.js, GitHub, Vercel y herramientas de trabajo.
+                    </p>
+                  </div>
+
+                  <div className="card">
+                    <div className="icon">ERR</div>
+                    <h3>Correccion de Errores</h3>
+                    <p>
+                      Soluciono errores en paginas web, proyectos Next.js,
+                      GitHub, Vercel, HTML, CSS y JavaScript.
                     </p>
                   </div>
                 </div>
