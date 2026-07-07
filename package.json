@@ -1,9 +1,9 @@
-{
+﻿{
   "name": "lenin-portafolio",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "eslint": "latest",
-    "eslint-config-next": "latest",
-    "tailwindcss": "latest"
+    "eslint-config-next": "latest"
   }
 }

@@ -1,6 +1,8 @@
-﻿export const metadata = {
+﻿import "./globals.css";
+
+export const metadata = {
   title: "Lenin Johan Cojal Valle | Portafolio",
-  description: "Portafolio personal de Lenin Johan Cojal Valle",
+  description: "Portafolio profesional de Lenin Johan Cojal Valle",
 };
 
 export default function RootLayout({ children }) {
