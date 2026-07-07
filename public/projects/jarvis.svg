@@ -1,10 +1,12 @@
 
 <svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="900" height="520" rx="45" fill="#111827"/>
-  <circle cx="730" cy="95" r="160" fill="#22C55E" opacity="0.20"/>
-  <circle cx="120" cy="420" r="190" fill="#22C55E" opacity="0.16"/>
-  <rect x="60" y="70" width="780" height="380" rx="36" fill="rgba(255,255,255,0.06)" stroke="#22C55E" stroke-width="3"/>
-  <text x="450" y="235" text-anchor="middle" font-size="58" font-family="Arial" font-weight="900" fill="white">OPENJARVIS</text>
-  <text x="450" y="305" text-anchor="middle" font-size="38" font-family="Arial" font-weight="800" fill="#22C55E">AI LOCAL</text>
-  <text x="450" y="380" text-anchor="middle" font-size="30" font-family="Arial" font-weight="700" fill="white">Desarrollo Web</text>
+  <rect width="900" height="520" rx="45" fill="#102018"/>
+  <circle cx="735" cy="95" r="170" fill="#22C55E" opacity="0.22"/>
+  <circle cx="120" cy="430" r="190" fill="#22C55E" opacity="0.16"/>
+  <rect x="65" y="75" width="770" height="370" rx="34" fill="rgba(255,255,255,0.06)" stroke="#22C55E" stroke-width="3"/>
+  <circle cx="210" cy="260" r="82" fill="#22C55E" opacity="0.18"/>
+  <polygon points="195,220 195,300 260,260" fill="#22C55E"/>
+  <text x="520" y="235" text-anchor="middle" font-size="56" font-family="Arial" font-weight="900" fill="white">OPENJARVIS</text>
+  <text x="520" y="305" text-anchor="middle" font-size="36" font-family="Arial" font-weight="800" fill="#22C55E">EPISODIO AI</text>
+  <text x="520" y="375" text-anchor="middle" font-size="28" font-family="Arial" font-weight="700" fill="white">Proyecto Web</text>
 </svg>
