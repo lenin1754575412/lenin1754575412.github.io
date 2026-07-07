@@ -251,9 +251,9 @@ export default function Home() {
                   <div className="gridGlow"></div>
 
                   <div className="heroLeft">
-                    <span className="tag">Futuristic Hero</span>
+                    <span className="tag">Portafolio Futurista</span>
                     <h1>
-                      Build Your <span className="gradientText">Digital Portfolio</span>
+                      Construyo tu <span className="gradientText">Portafolio Digital</span>
                     </h1>
                     <p>
                       Soy Lenin Johan Cojal Valle. Desarrollo paginas web modernas,
@@ -266,12 +266,12 @@ export default function Home() {
                       </div>
                       <p className="codeText">&gt; npm run build</p>
                       <p className="codeText success">Proyecto listo para produccion...</p>
-                      <p className="codeText">&gt; Deploy en Vercel completado</p>
+                      <p className="codeText">&gt; Publicado en Vercel correctamente</p>
                     </div>
 
                     <div className="stats">
                       <div className="stat"><b>{projects.length}+</b><span>Proyectos</span></div>
-                      <div className="stat"><b>Next.js</b><span>Framework</span></div>
+                      <div className="stat"><b>Next.js</b><span>Tecnologia</span></div>
                       <div className="stat"><b>Vercel</b><span>Publicado</span></div>
                     </div>
 
@@ -289,7 +289,7 @@ export default function Home() {
                       <img src="/logo.svg" alt="Logo Lenin Johan" />
                       <div className="holoText">
                         <h2>Lenin Johan</h2>
-                        <p>Frontend Developer</p>
+                        <p>Desarrollador Frontend</p>
                         <small>@{GITHUB_USER}</small>
                       </div>
                     </div>
