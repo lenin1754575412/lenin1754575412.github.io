@@ -1,10 +1,10 @@
 
-<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="500" height="500" rx="90" fill="#050816"/>
-  <circle cx="250" cy="250" r="190" fill="#071B3A" stroke="#38BDF8" stroke-width="10"/>
-  <path d="M145 120H205V310H310V365H145V120Z" fill="#0EA5E9"/>
-  <path d="M285 120H355V310C355 355 325 385 278 385H235V330H270C280 330 285 324 285 312V120Z" fill="#38BDF8"/>
-  <path d="M105 245L150 205V245L125 265L150 285V325L105 285V245Z" fill="#38BDF8"/>
-  <path d="M395 245L350 205V245L375 265L350 285V325L395 285V245Z" fill="#38BDF8"/>
-  <text x="250" y="440" text-anchor="middle" font-size="46" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="white">Lenin Johan</text>
+<svg width="700" height="700" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="700" height="700" rx="150" fill="#050816"/>
+  <circle cx="350" cy="350" r="250" fill="#071B3A" stroke="#38BDF8" stroke-width="14"/>
+  <path d="M205 160H285V420H430V495H205V160Z" fill="#0EA5E9"/>
+  <path d="M385 160H490V420C490 485 445 530 380 530H320V455H370C380 455 385 448 385 435V160Z" fill="#38BDF8"/>
+  <path d="M135 335L200 280V335L165 360L200 385V440L135 385V335Z" fill="#38BDF8"/>
+  <path d="M565 335L500 280V335L535 360L500 385V440L565 385V335Z" fill="#38BDF8"/>
+  <text x="350" y="620" text-anchor="middle" font-size="58" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="white">Lenin Johan</text>
 </svg>
