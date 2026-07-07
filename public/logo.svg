@@ -1,10 +1,28 @@
 
 <svg width="700" height="700" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="700" height="700" rx="150" fill="#050816"/>
-  <circle cx="350" cy="350" r="250" fill="#071B3A" stroke="#38BDF8" stroke-width="14"/>
-  <path d="M205 160H285V420H430V495H205V160Z" fill="#0EA5E9"/>
-  <path d="M385 160H490V420C490 485 445 530 380 530H320V455H370C380 455 385 448 385 435V160Z" fill="#38BDF8"/>
-  <path d="M135 335L200 280V335L165 360L200 385V440L135 385V335Z" fill="#38BDF8"/>
-  <path d="M565 335L500 280V335L535 360L500 385V440L565 385V335Z" fill="#38BDF8"/>
+  <defs>
+    <linearGradient id="g1" x1="130" y1="120" x2="570" y2="570" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="0.55" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="700" height="700" rx="150" fill="#070014"/>
+  <circle cx="350" cy="350" r="255" fill="#120525" stroke="url(#g1)" stroke-width="14" filter="url(#glow)"/>
+
+  <path d="M205 160H285V420H430V495H205V160Z" fill="#22D3EE"/>
+  <path d="M385 160H490V420C490 485 445 530 380 530H320V455H370C380 455 385 448 385 435V160Z" fill="url(#g1)"/>
+
+  <path d="M135 335L200 280V335L165 360L200 385V440L135 385V335Z" fill="#22D3EE"/>
+  <path d="M565 335L500 280V335L535 360L500 385V440L565 385V335Z" fill="#EC4899"/>
+
   <text x="350" y="620" text-anchor="middle" font-size="58" font-family="Arial, Helvetica, sans-serif" font-weight="900" fill="white">Lenin Johan</text>
 </svg>
