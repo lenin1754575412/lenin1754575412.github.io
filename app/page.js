@@ -52,6 +52,7 @@ export default function Home() {
   const [projects, setProjects] = useState(fallbackProjects);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const perPage = 6;
 
