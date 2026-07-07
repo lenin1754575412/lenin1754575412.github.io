@@ -5,29 +5,47 @@ import { useEffect, useMemo, useState } from "react";
 
 const GITHUB_USER = "lenin1754575412";
 
+const imageMap = {
+  "lenin1754575412.github.io": "/projects/portfolio.svg",
+  "openjarvis-local": "/projects/jarvis.svg",
+  "fiestas-patronales-celendin": "/projects/fiestas.svg",
+  "peru-turismo-next": "/projects/turismo.svg"
+};
+
 const fallbackProjects = [
   {
     id: "local-1",
     name: "Portafolio Personal",
     description: "Mi portafolio profesional creado con Next.js, React, GitHub y Vercel.",
     html_url: "https://github.com/lenin1754575412/lenin1754575412.github.io",
-    language: "Next.js"
+    language: "Next.js",
+    image: "/projects/portfolio.svg"
   },
   {
     id: "local-2",
-    name: "P?gina de Motos",
-    description: "Proyecto web moderno de motos con secciones informativas.",
+    name: "OpenJarvis Local",
+    description: "Proyecto con inteligencia artificial local, frontend y backend para Windows.",
     html_url: "https://github.com/lenin1754575412",
-    language: "Web"
+    language: "Python",
+    image: "/projects/jarvis.svg"
   },
   {
     id: "local-3",
-    name: "Sistema de Ventas",
-    description: "Sistema para ferreter?a, ropa y electrodom?sticos.",
+    name: "Turismo Peru",
+    description: "Portal web de turismo con lugares, historia, gastronomia, cultura y galerias.",
     html_url: "https://github.com/lenin1754575412",
-    language: "Sistema"
+    language: "Next.js",
+    image: "/projects/turismo.svg"
   }
 ];
+
+function limpiarTexto(texto) {
+  if (!texto) return "Proyecto publico subido a GitHub.";
+  return texto
+    .replaceAll("?", "u")
+    .replaceAll("p?blico", "publico")
+    .replaceAll("c?digo", "codigo");
+}
 
 export default function Home() {
   const [section, setSection] = useState("inicio");
@@ -45,7 +63,14 @@ export default function Home() {
       const data = await res.json();
 
       if (Array.isArray(data)) {
-        const repos = data.filter((repo) => !repo.fork);
+        const repos = data
+          .filter((repo) => !repo.fork)
+          .map((repo) => ({
+            ...repo,
+            description: limpiarTexto(repo.description),
+            image: imageMap[repo.name] || "/projects/default.svg"
+          }));
+
         setProjects(repos.length ? repos : fallbackProjects);
       } else {
         setProjects(fallbackProjects);
@@ -85,14 +110,6 @@ export default function Home() {
     ".orb2 { width: 300px; height: 300px; background: rgba(37,99,235,0.20); right: 6%; bottom: 8%; animation-delay: 1.5s; }",
     ".orb3 { width: 190px; height: 190px; background: rgba(14,165,233,0.18); right: 32%; top: 18%; animation-delay: 2.5s; }",
     "@keyframes floatOrb { from { transform: translateY(0) scale(1); } to { transform: translateY(-35px) scale(1.08); } }",
-    ".codeBg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; opacity: 0.16; }",
-    ".codeBg span { position: absolute; color: #38bdf8; font-weight: 900; animation: fallCode 12s linear infinite; }",
-    ".codeBg span:nth-child(1) { left: 8%; animation-delay: 0s; font-size: 38px; }",
-    ".codeBg span:nth-child(2) { left: 23%; animation-delay: 2s; font-size: 28px; }",
-    ".codeBg span:nth-child(3) { left: 51%; animation-delay: 4s; font-size: 34px; }",
-    ".codeBg span:nth-child(4) { left: 74%; animation-delay: 1s; font-size: 30px; }",
-    ".codeBg span:nth-child(5) { left: 90%; animation-delay: 5s; font-size: 40px; }",
-    "@keyframes fallCode { from { top: -10%; transform: rotate(0deg); } to { top: 110%; transform: rotate(360deg); } }",
     ".navbar { width: 100%; padding: 16px 7%; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: rgba(5,8,22,0.78); backdrop-filter: blur(18px); border-bottom: 1px solid rgba(255,255,255,0.12); position: sticky; top: 0; z-index: 20; }",
     ".brand { display: flex; align-items: center; gap: 13px; }",
     ".brand img { width: 58px; height: 58px; border-radius: 18px; box-shadow: 0 0 35px rgba(56,189,248,0.35); animation: logoPulse 2.7s ease-in-out infinite; }",
@@ -103,9 +120,7 @@ export default function Home() {
     ".menu button { padding: 10px 15px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(15,23,42,0.72); color: white; font-weight: bold; cursor: pointer; transition: 0.25s; }",
     ".menu button:hover, .menu button.active { background: #38bdf8; color: #020617; border-color: #38bdf8; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(56,189,248,0.18); }",
     ".screen { min-height: calc(100vh - 90px); padding: 55px 7%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }",
-    ".panel { width: 100%; max-width: 1220px; background: rgba(15,23,42,0.78); border: 1px solid rgba(255,255,255,0.12); border-radius: 34px; padding: 42px; box-shadow: 0 35px 110px rgba(0,0,0,0.48); position: relative; overflow: hidden; }",
-    ".panel::before { content: ''; position: absolute; inset: -2px; background: linear-gradient(120deg, transparent, rgba(56,189,248,0.18), transparent); transform: translateX(-100%); animation: shine 5s ease-in-out infinite; pointer-events: none; }",
-    "@keyframes shine { 0% { transform: translateX(-100%); } 45%,100% { transform: translateX(120%); } }",
+    ".panel { width: 100%; max-width: 1240px; background: rgba(15,23,42,0.78); border: 1px solid rgba(255,255,255,0.12); border-radius: 34px; padding: 42px; box-shadow: 0 35px 110px rgba(0,0,0,0.48); position: relative; overflow: hidden; }",
     ".content { position: relative; z-index: 2; animation: aparecer 0.45s ease both; }",
     "@keyframes aparecer { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }",
     ".heroGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 34px; align-items: center; }",
@@ -120,20 +135,20 @@ export default function Home() {
     ".btnPrimary { background: #38bdf8; color: #020617; border: none; }",
     ".btnSecondary { background: transparent; color: white; border: 1px solid #38bdf8; }",
     ".btn:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(56,189,248,0.18); }",
-    ".profile { text-align: center; padding: 36px; border-radius: 30px; background: rgba(2,6,23,0.82); border: 1px solid rgba(255,255,255,0.12); position: relative; }",
-    ".profile::before { content: ''; position: absolute; inset: -2px; border-radius: 32px; background: conic-gradient(from 0deg, transparent, #38bdf8, transparent, #2563eb, transparent); z-index: -1; animation: rotateRing 7s linear infinite; }",
-    "@keyframes rotateRing { to { transform: rotate(360deg); } }",
+    ".profile { text-align: center; padding: 36px; border-radius: 30px; background: rgba(2,6,23,0.82); border: 1px solid rgba(255,255,255,0.12); }",
     ".profile img { width: 185px; height: 185px; object-fit: contain; border-radius: 35px; margin-bottom: 20px; animation: floatLogo 4s ease-in-out infinite; }",
     "@keyframes floatLogo { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }",
     ".stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; margin-top: 25px; }",
     ".stat { padding: 16px; border-radius: 18px; background: rgba(2,6,23,0.80); border: 1px solid rgba(255,255,255,0.12); }",
     ".stat b { display: block; color: #38bdf8; font-size: 23px; }",
     ".stat span { color: #94a3b8; font-size: 14px; }",
-    ".cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 18px; margin-top: 30px; }",
+    ".cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; margin-top: 30px; }",
     ".card { padding: 24px; border-radius: 22px; background: rgba(2,6,23,0.82); border: 1px solid rgba(255,255,255,0.12); transition: 0.25s; }",
     ".card:hover { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 22px 55px rgba(56,189,248,0.14); }",
     ".skill { text-align: center; color: #38bdf8; font-weight: 900; font-size: 18px; }",
-    ".projectCard { min-height: 238px; display: flex; flex-direction: column; justify-content: space-between; }",
+    ".projectCard { padding: 0; overflow: hidden; min-height: 430px; display: flex; flex-direction: column; justify-content: space-between; }",
+    ".projectImage { width: 100%; height: 160px; object-fit: cover; display: block; border-bottom: 1px solid rgba(255,255,255,0.12); }",
+    ".projectBody { padding: 22px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }",
     ".badge { display: inline-block; width: fit-content; padding: 7px 12px; border-radius: 999px; background: rgba(56,189,248,0.12); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); font-size: 13px; font-weight: bold; margin-bottom: 12px; }",
     ".projectCard h3 { margin: 0 0 10px; word-break: break-word; }",
     ".link { display: inline-block; margin-top: 16px; padding: 10px 13px; border-radius: 10px; background: #38bdf8; color: #020617; font-weight: bold; text-decoration: none; width: fit-content; }",
@@ -164,14 +179,6 @@ export default function Home() {
         <div className="orb orb2"></div>
         <div className="orb orb3"></div>
 
-        <div className="codeBg">
-          <span>{"</>"}</span>
-          <span>{"{}"}</span>
-          <span>{"JS"}</span>
-          <span>{"<>"}</span>
-          <span>{"01"}</span>
-        </div>
-
         <nav className="navbar">
           <div className="brand">
             <img src="/logo.svg" alt="Logo Lenin Johan" />
@@ -183,7 +190,7 @@ export default function Home() {
 
           <div className="menu">
             {menuButton("inicio", "Inicio")}
-            {menuButton("sobre", "Sobre m?")}
+            {menuButton("sobre", "Sobre mi")}
             {menuButton("habilidades", "Habilidades")}
             {menuButton("proyectos", "Proyectos")}
             {menuButton("contacto", "Contacto")}
@@ -201,32 +208,18 @@ export default function Home() {
                       Hola, soy <span className="gradientText">Lenin Johan Cojal Valle</span>
                     </h1>
                     <p>
-                      Desarrollo p?ginas web modernas, portafolios, sistemas y proyectos
-                      usando HTML, CSS, JavaScript, React, Next.js, GitHub y Vercel.
+                      Desarrollo paginas web modernas, portafolios, sistemas y proyectos usando HTML, CSS, JavaScript, React, Next.js, GitHub y Vercel.
                     </p>
 
                     <div className="stats">
-                      <div className="stat">
-                        <b>{projects.length}+</b>
-                        <span>Proyectos</span>
-                      </div>
-                      <div className="stat">
-                        <b>Next.js</b>
-                        <span>Framework</span>
-                      </div>
-                      <div className="stat">
-                        <b>Vercel</b>
-                        <span>Publicado</span>
-                      </div>
+                      <div className="stat"><b>{projects.length}+</b><span>Proyectos</span></div>
+                      <div className="stat"><b>Next.js</b><span>Framework</span></div>
+                      <div className="stat"><b>Vercel</b><span>Publicado</span></div>
                     </div>
 
                     <div className="buttons">
-                      <button className="btn btnPrimary" onClick={() => cambiarSeccion("proyectos")}>
-                        Ver proyectos
-                      </button>
-                      <button className="btn btnSecondary" onClick={() => cambiarSeccion("contacto")}>
-                        Contactarme
-                      </button>
+                      <button className="btn btnPrimary" onClick={() => cambiarSeccion("proyectos")}>Ver proyectos</button>
+                      <button className="btn btnSecondary" onClick={() => cambiarSeccion("contacto")}>Contactarme</button>
                     </div>
                   </div>
 
@@ -241,38 +234,28 @@ export default function Home() {
 
               {section === "sobre" && (
                 <div>
-                  <span className="tag">Sobre m?</span>
-                  <h2>?Qui?n soy?</h2>
+                  <span className="tag">Sobre mi</span>
+                  <h2>Quien soy</h2>
                   <p>
-                    Soy Lenin Johan Cojal Valle. Estoy construyendo mi portafolio profesional
-                    para mostrar mis proyectos, p?ginas web, sistemas, dise?os y trabajos realizados.
+                    Soy Lenin Johan Cojal Valle. Estoy construyendo mi portafolio profesional para mostrar mis proyectos, paginas web, sistemas, disenos y trabajos realizados.
                   </p>
 
                   <div className="cards">
-                    <div className="card">
-                      <h3>?? Desarrollo Web</h3>
-                      <p>Creo p?ginas modernas, limpias, r?pidas y adaptables a celular.</p>
-                    </div>
-                    <div className="card">
-                      <h3>?? Proyectos</h3>
-                      <p>Mis repositorios p?blicos de GitHub aparecen autom?ticamente.</p>
-                    </div>
-                    <div className="card">
-                      <h3>?? Objetivo</h3>
-                      <p>Seguir mejorando y crear proyectos cada vez m?s profesionales.</p>
-                    </div>
+                    <div className="card"><h3>Desarrollo Web</h3><p>Creo paginas modernas, limpias, rapidas y adaptables a celular.</p></div>
+                    <div className="card"><h3>Proyectos</h3><p>Mis repositorios publicos de GitHub aparecen automaticamente.</p></div>
+                    <div className="card"><h3>Objetivo</h3><p>Seguir mejorando y crear proyectos cada vez mas profesionales.</p></div>
                   </div>
                 </div>
               )}
 
               {section === "habilidades" && (
                 <div>
-                  <span className="tag">Tecnolog?as</span>
+                  <span className="tag">Tecnologias</span>
                   <h2>Mis habilidades</h2>
-                  <p>Herramientas que uso para crear mis p?ginas y sistemas web.</p>
+                  <p>Herramientas que uso para crear mis paginas y sistemas web.</p>
 
                   <div className="cards">
-                    {["HTML", "CSS", "JavaScript", "React", "Next.js", "GitHub", "VS Code", "Dise?o Web"].map((skill) => (
+                    {["HTML", "CSS", "JavaScript", "React", "Next.js", "GitHub", "VS Code", "Diseno Web"].map((skill) => (
                       <div className="card skill" key={skill}>{skill}</div>
                     ))}
                   </div>
@@ -281,45 +264,38 @@ export default function Home() {
 
               {section === "proyectos" && (
                 <div>
-                  <span className="tag">GitHub autom?tico</span>
+                  <span className="tag">GitHub automatico</span>
                   <h2>Mis proyectos</h2>
                   <p>
-                    Cuando subas nuevos repositorios p?blicos a GitHub, aparecer?n aqu? autom?ticamente.
+                    Cuando subas nuevos repositorios publicos a GitHub, apareceran aqui automaticamente con imagen.
                   </p>
 
-                  <button className="btn btnSecondary" onClick={cargarProyectos}>
-                    Actualizar proyectos
-                  </button>
+                  <button className="btn btnSecondary" onClick={cargarProyectos}>Actualizar proyectos</button>
 
                   {loading ? (
-                    <div className="card" style={{ marginTop: 25 }}>
-                      Cargando proyectos desde GitHub...
-                    </div>
+                    <div className="card" style={{ marginTop: 25 }}>Cargando proyectos desde GitHub...</div>
                   ) : (
                     <>
                       <div className="cards">
                         {visibleProjects.map((project) => (
                           <div className="card projectCard" key={project.id}>
-                            <div>
-                              <span className="badge">{project.language || "GitHub"}</span>
-                              <h3>{project.name}</h3>
-                              <p>{project.description || "Proyecto p?blico subido a GitHub."}</p>
+                            <img className="projectImage" src={project.image || "/projects/default.svg"} alt={project.name} />
+                            <div className="projectBody">
+                              <div>
+                                <span className="badge">{project.language || "GitHub"}</span>
+                                <h3>{project.name}</h3>
+                                <p>{project.description || "Proyecto publico subido a GitHub."}</p>
+                              </div>
+                              <a href={project.html_url} target="_blank" rel="noreferrer" className="link">Ver codigo</a>
                             </div>
-                            <a href={project.html_url} target="_blank" rel="noreferrer" className="link">
-                              Ver c?digo
-                            </a>
                           </div>
                         ))}
                       </div>
 
                       <div className="pager">
-                        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                          Anterior
-                        </button>
-                        <span>P?gina {page} de {totalPages}</span>
-                        <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-                          Siguiente
-                        </button>
+                        <button disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</button>
+                        <span>Pagina {page} de {totalPages}</span>
+                        <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Siguiente</button>
                       </div>
                     </>
                   )}
@@ -329,22 +305,13 @@ export default function Home() {
               {section === "contacto" && (
                 <div>
                   <span className="tag">Contacto</span>
-                  <h2>Cont?ctame</h2>
+                  <h2>Contactame</h2>
                   <p>Estos son mis datos principales para mi portafolio.</p>
 
                   <div className="cards">
-                    <div className="card">
-                      <h3>Nombre</h3>
-                      <p>Lenin Johan Cojal Valle</p>
-                    </div>
-                    <div className="card">
-                      <h3>GitHub</h3>
-                      <p>{GITHUB_USER}</p>
-                    </div>
-                    <div className="card">
-                      <h3>Correo</h3>
-                      <p>cojalvallelenin919@gmail.com</p>
-                    </div>
+                    <div className="card"><h3>Nombre</h3><p>Lenin Johan Cojal Valle</p></div>
+                    <div className="card"><h3>GitHub</h3><p>{GITHUB_USER}</p></div>
+                    <div className="card"><h3>Correo</h3><p>cojalvallelenin919@gmail.com</p></div>
                   </div>
                 </div>
               )}

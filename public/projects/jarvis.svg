@@ -1,0 +1,10 @@
+
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" rx="45" fill="#111827"/>
+  <circle cx="730" cy="95" r="160" fill="#22c55e" opacity="0.20"/>
+  <circle cx="120" cy="420" r="190" fill="#22c55e" opacity="0.16"/>
+  <rect x="60" y="70" width="780" height="380" rx="36" fill="rgba(255,255,255,0.06)" stroke="#22c55e" stroke-width="3"/>
+  <text x="450" y="235" text-anchor="middle" font-size="58" font-family="Arial" font-weight="900" fill="white">OPENJARVIS</text>
+  <text x="450" y="305" text-anchor="middle" font-size="38" font-family="Arial" font-weight="800" fill="#22c55e">AI</text>
+  <text x="450" y="380" text-anchor="middle" font-size="30" font-family="Arial" font-weight="700" fill="white">&lt;/&gt; Desarrollo Web</text>
+</svg>
