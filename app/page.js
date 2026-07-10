@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -160,7 +160,11 @@ export default function Home() {
     ".projectCard img { width: 100%; height: 170px; object-fit: cover; }",
     ".projectBody { padding: 22px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }",
     ".badge { display: inline-block; width: fit-content; padding: 7px 12px; border-radius: 999px; background: rgba(249,115,22,0.14); color: #fdba74; font-weight: 900; font-size: 13px; margin-bottom: 14px; border: 1px solid rgba(249,115,22,0.25); }",
-    ".projectLink { display: inline-block; width: fit-content; margin-top: 18px; padding: 11px 15px; border-radius: 12px; background: #f97316; color: #120817; font-weight: 900; text-decoration: none; }",
+    ".projectButtons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }",
+".projectLink { display: inline-flex; align-items: center; justify-content: center; width: fit-content; padding: 11px 15px; border-radius: 12px; background: #f97316; color: #120817; font-weight: 900; text-decoration: none; transition: transform 0.25s ease, box-shadow 0.25s ease; }",
+".projectLink:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(249,115,22,0.28); }",
+".projectLive { background: transparent; color: #fdba74; border: 2px solid #f97316; }",
+".projectLive:hover { background: #f97316; color: #120817; }",
 
     ".pager { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 26px; color: #fed7aa; font-weight: 900; }",
     ".pager button { padding: 11px 16px; border-radius: 12px; border: 1px solid rgba(249,115,22,0.35); background: rgba(255,255,255,0.06); color: #fff7ed; font-weight: 900; cursor: pointer; }",
@@ -387,9 +391,28 @@ export default function Home() {
                               <p>{project.description || "Proyecto publico subido a GitHub."}</p>
                             </div>
 
-                            <a href={project.html_url} target="_blank" rel="noreferrer" className="projectLink">
-                              Ver codigo
-                            </a>
+                            
+<div className="projectButtons">
+  <a
+    href={project.html_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="projectLink"
+  >
+    Ver código
+  </a>
+
+  {project.homepage && (
+    <a
+      href={project.homepage}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="projectLink projectLive"
+    >
+      Ver página
+    </a>
+  )}
+</div>
                           </div>
                         </div>
                       ))}
@@ -447,3 +470,4 @@ export default function Home() {
     </>
   );
 }
+
