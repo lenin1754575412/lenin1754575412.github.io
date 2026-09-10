@@ -38,34 +38,40 @@ const fallbackProjects = [
   }
 ];
 
+const Icon = ({ paths }) => (
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {paths}
+  </svg>
+);
+
 const services = [
   {
-    icon: "◆",
+    icon: <Icon paths={<><rect x="2.5" y="4" width="19" height="15" rx="2.5" /><path d="M2.5 8.5h19" /><circle cx="5.5" cy="6.2" r="0.6" fill="currentColor" /><circle cx="7.6" cy="6.2" r="0.6" fill="currentColor" /></>} />,
     title: "Páginas Web",
     text: "Creo páginas modernas para negocios, tiendas, eventos, turismo, instituciones y presentaciones personales."
   },
   {
-    icon: "▤",
+    icon: <Icon paths={<><path d="M3 20h18" /><rect x="4" y="11" width="3.5" height="6" rx="1" /><rect x="10" y="7" width="3.5" height="10" rx="1" /><rect x="16" y="4" width="3.5" height="13" rx="1" /></>} />,
     title: "Sistemas de Ventas",
     text: "Desarrollo sistemas para registrar productos, clientes, ventas, inventario, reportes y control de una tienda."
   },
   {
-    icon: "★",
+    icon: <Icon paths={<><rect x="3" y="7" width="18" height="13" rx="2.5" /><path d="M8 7V5.5A2 2 0 0 1 10 3.5h4A2 2 0 0 1 16 5.5V7" /><path d="M3 12.5h18" /></>} />,
     title: "Portafolios Profesionales",
     text: "Diseño portafolios personales con proyectos, contacto, GitHub, Vercel y un estilo profesional."
   },
   {
-    icon: "▦",
+    icon: <Icon paths={<><path d="M5 8h14l-1 11.5A1.5 1.5 0 0 1 16.5 21h-9A1.5 1.5 0 0 1 6 19.5L5 8Z" /><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8" /></>} />,
     title: "Tiendas y Catálogos Web",
     text: "Creo catálogos para mostrar productos, precios, imágenes, descripción y contacto para clientes."
   },
   {
-    icon: "⚙",
+    icon: <Icon paths={<><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" /></>} />,
     title: "Soporte y Configuración",
     text: "Ayudo con instalación de programas, configuración de Windows, VS Code, Node.js, GitHub y Vercel."
   },
   {
-    icon: "◈",
+    icon: <Icon paths={<><rect x="5" y="7" width="14" height="12" rx="4" /><path d="M9 4l1.5 3M15 4l-1.5 3M5 11H2.5M21.5 11H19M5 15H2.5M21.5 15H19M12 11v5M9.5 13l-1.2 1.4" /></>} />,
     title: "Corrección de Errores",
     text: "Soluciono errores en páginas web, proyectos Next.js, GitHub, Vercel, HTML, CSS y JavaScript."
   }
@@ -227,7 +233,15 @@ export default function Home() {
     .card:hover::after { opacity: 1; }
     .card h3 { margin: 0 0 10px; font-size: 21px; }
     .card p { font-size: 15px; }
-    .icon { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 22px; background: linear-gradient(135deg, rgba(249,115,22,0.20), rgba(236,72,153,0.14)); color: #fdba74; margin-bottom: 16px; border: 1px solid rgba(249,115,22,0.25); }
+    .icon { position: relative; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(249,115,22,0.24), rgba(236,72,153,0.16)); color: #fdba74; margin-bottom: 18px; border: 1px solid rgba(249,115,22,0.30); box-shadow: 0 10px 26px rgba(249,115,22,0.14); transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease, color .35s ease; }
+    .icon svg { transition: transform .35s cubic-bezier(.2,.7,.3,1); }
+    .card:hover .icon { transform: translateY(-4px) rotate(-6deg); color: #fff; box-shadow: 0 18px 40px rgba(236,72,153,0.30); background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
+    .card:hover .icon svg { transform: scale(1.12) rotate(6deg); }
+
+    /* Staggered entrance (backwards keeps cards hidden during their delay,
+       and lets normal :hover transforms work once the animation ends) */
+    .rise { animation: rise .6s cubic-bezier(.2,.7,.3,1) backwards; }
+    @keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     /* Skills */
     .skillGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 30px; }
@@ -245,6 +259,10 @@ export default function Home() {
     .projectThumb img { width: 100%; height: 168px; object-fit: cover; display: block; transition: transform .5s ease; }
     .projectCard:hover .projectThumb img { transform: scale(1.06); }
     .projectThumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(12,6,17,0.55)); }
+    .playBtn { position: absolute; left: 16px; bottom: 16px; z-index: 2; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; color: #120817; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 10px 26px rgba(249,115,22,0.45); transform: translateY(8px) scale(.85); opacity: 0; transition: transform .35s cubic-bezier(.2,.7,.3,1), opacity .35s ease; }
+    .playBtn svg { margin-left: 2px; }
+    .projectCard:hover .playBtn { opacity: 1; transform: translateY(0) scale(1); animation: playPulse 1.8s ease-in-out infinite .35s; }
+    @keyframes playPulse { 0%,100% { box-shadow: 0 10px 26px rgba(249,115,22,0.45), 0 0 0 0 rgba(249,115,22,0.5); } 50% { box-shadow: 0 10px 26px rgba(249,115,22,0.45), 0 0 0 12px rgba(249,115,22,0); } }
     .projectBody { padding: 22px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
     .badge { display: inline-block; width: fit-content; padding: 6px 12px; border-radius: 999px; background: rgba(249,115,22,0.14); color: #fdba74; font-weight: 700; font-size: 12px; margin-bottom: 12px; border: 1px solid rgba(249,115,22,0.25); }
     .projectBody h3 { font-size: 20px; margin: 0 0 8px; }
@@ -272,8 +290,9 @@ export default function Home() {
     .contactCard .label { color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .contactCard .value { font-size: 16px; font-weight: 700; word-break: break-word; }
 
-    .footer { position: relative; z-index: 1; padding: 30px 7% 40px; text-align: center; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
-    .footer b { color: var(--ink-soft); }
+    .footer { position: relative; z-index: 1; padding: 34px 7% 44px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; border-top: 1px solid var(--line); }
+    .footBrand { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.3px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .footYear { color: var(--muted); font-size: 13px; }
 
     @media (max-width: 900px) {
       .grid { grid-template-columns: 1fr; }
@@ -434,8 +453,8 @@ export default function Home() {
                 </div>
 
                 <div className="cards">
-                  {services.map((s) => (
-                    <div className="card" key={s.title}>
+                  {services.map((s, i) => (
+                    <div className="card rise" style={{ animationDelay: i * 0.08 + "s" }} key={s.title}>
                       <div className="icon">{s.icon}</div>
                       <h3>{s.title}</h3>
                       <p>{s.text}</p>
@@ -489,10 +508,19 @@ export default function Home() {
                 ) : (
                   <>
                     <div className="cards">
-                      {visibleProjects.map((project) => (
-                        <div className="card projectCard" key={project.id}>
+                      {visibleProjects.map((project, i) => (
+                        <div
+                          className="card projectCard rise"
+                          style={{ animationDelay: i * 0.08 + "s" }}
+                          key={project.id}
+                        >
                           <div className="projectThumb">
                             <img src={project.image || "/projects/default.svg"} alt={project.name} />
+                            <span className="playBtn" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </span>
                           </div>
 
                           <div className="projectBody">
@@ -612,7 +640,8 @@ export default function Home() {
         </section>
 
         <footer className="footer">
-          © {new Date().getFullYear()} <b>Lenin Johan Cojal Valle</b> · Hecho con Next.js, React y ♥
+          <span className="footBrand">Lenin Johan Cojal Valle</span>
+          <span className="footYear">© {new Date().getFullYear()} · Todos los derechos reservados</span>
         </footer>
       </main>
     </>
