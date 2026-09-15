@@ -2,9 +2,9 @@
 <svg width="700" height="700" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="g" x1="100" y1="100" x2="600" y2="600">
-      <stop stop-color="#22D3EE"/>
-      <stop offset="0.45" stop-color="#A855F7"/>
-      <stop offset="1" stop-color="#6366F1"/>
+      <stop stop-color="#ff3d9a"/>
+      <stop offset="0.45" stop-color="#a24bff"/>
+      <stop offset="1" stop-color="#35d6ff"/>
     </linearGradient>
     <filter id="glow">
       <feGaussianBlur stdDeviation="8" result="blur"/>
@@ -15,11 +15,11 @@
     </filter>
   </defs>
 
-  <rect width="700" height="700" rx="150" fill="#05060F"/>
-  <circle cx="350" cy="350" r="250" fill="#0B1026" stroke="url(#g)" stroke-width="14" filter="url(#glow)"/>
-  <path d="M205 160H285V420H430V495H205V160Z" fill="#22D3EE"/>
+  <rect width="700" height="700" rx="150" fill="#070313"/>
+  <circle cx="350" cy="350" r="250" fill="#150726" stroke="url(#g)" stroke-width="14" filter="url(#glow)"/>
+  <path d="M205 160H285V420H430V495H205V160Z" fill="#ff3d9a"/>
   <path d="M385 160H490V420C490 485 445 530 380 530H320V455H370C380 455 385 448 385 435V160Z" fill="url(#g)"/>
-  <path d="M135 335L200 280V335L165 360L200 385V440L135 385V335Z" fill="#A855F7"/>
-  <path d="M565 335L500 280V335L535 360L500 385V440L565 385V335Z" fill="#6366F1"/>
+  <path d="M135 335L200 280V335L165 360L200 385V440L135 385V335Z" fill="#a24bff"/>
+  <path d="M565 335L500 280V335L535 360L500 385V440L565 385V335Z" fill="#35d6ff"/>
   <text x="350" y="620" text-anchor="middle" font-size="58" font-family="Arial" font-weight="900" fill="white">Lenin Johan</text>
 </svg>

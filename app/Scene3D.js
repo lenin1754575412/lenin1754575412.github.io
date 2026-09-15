@@ -145,14 +145,15 @@ export default function Scene3D({ reduced = false }) {
       camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
       camera.position.set(0, 0, 4.2);
 
-      geometry = new THREE.IcosahedronGeometry(1.18, 24);
+      const detail = width < 640 ? 16 : 22; // menos polígonos en móvil
+      geometry = new THREE.IcosahedronGeometry(1.18, detail);
       material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
         uniforms: {
           uTime: { value: 0 },
-          uAmp: { value: 0.34 },
-          uScale: { value: 0.9 },
+          uAmp: { value: 0.38 },
+          uScale: { value: 0.95 },
           uColorA: { value: new THREE.Color(0.20, 0.85, 0.95) }, // cian
           uColorB: { value: new THREE.Color(0.66, 0.36, 1.0) },  // violeta
           uColorC: { value: new THREE.Color(0.30, 0.45, 1.0) }   // azul
@@ -188,9 +189,10 @@ export default function Scene3D({ reduced = false }) {
         target.x += (pointer.x - target.x) * 0.05;
         target.y += (pointer.y - target.y) * 0.05;
         material.uniforms.uTime.value = t;
-        mesh.rotation.y = t * 0.25 + target.x * 0.6;
-        mesh.rotation.x = target.y * 0.5;
-        mesh.position.y = Math.sin(t * 0.9) * 0.06;
+        mesh.rotation.y = t * 0.32 + target.x * 0.7;
+        mesh.rotation.x = Math.sin(t * 0.4) * 0.12 + target.y * 0.55;
+        mesh.rotation.z = Math.sin(t * 0.25) * 0.08;
+        mesh.position.y = Math.sin(t * 0.9) * 0.08;
         renderer.render(scene, camera);
       };
 
