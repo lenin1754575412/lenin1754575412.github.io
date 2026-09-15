@@ -1,8 +1,94 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const GITHUB_USER = "lenin1754575412";
+
+/* Palabras que se escriben solas en el título del inicio */
+const rotatingWords = [
+  "proyectos web.",
+  "sistemas.",
+  "portafolios.",
+  "páginas web.",
+  "ideas."
+];
+
+/* Detecta si el usuario prefiere menos animación */
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
+/* Efecto máquina de escribir con borrado */
+function useTypewriter(words, { speed = 85, deleteSpeed = 40, pause = 1500, enabled = true } = {}) {
+  const [text, setText] = useState(words[0]);
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      setText(words[0]);
+      return;
+    }
+    const current = words[index % words.length];
+    let timeout;
+
+    if (!deleting && text === current) {
+      timeout = setTimeout(() => setDeleting(true), pause);
+    } else if (deleting && text === "") {
+      setDeleting(false);
+      setIndex((i) => i + 1);
+    } else {
+      timeout = setTimeout(
+        () => {
+          setText(
+            deleting ? current.slice(0, text.length - 1) : current.slice(0, text.length + 1)
+          );
+        },
+        deleting ? deleteSpeed : speed
+      );
+    }
+    return () => clearTimeout(timeout);
+  }, [text, deleting, index, words, speed, deleteSpeed, pause, enabled]);
+
+  return text;
+}
+
+/* Número que sube desde 0 hasta el valor final */
+function CountUp({ end, duration = 1300, suffix = "", enabled = true }) {
+  const [val, setVal] = useState(enabled ? 0 : end);
+
+  useEffect(() => {
+    if (!enabled) {
+      setVal(end);
+      return;
+    }
+    let raf;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(Math.round(end * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [end, duration, enabled]);
+
+  return (
+    <>
+      {val}
+      {suffix}
+    </>
+  );
+}
 
 const imageMap = {
   "lenin1754575412.github.io": "/projects/portfolio.svg",
@@ -94,8 +180,53 @@ export default function Home() {
   const [projects, setProjects] = useState(fallbackProjects);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [progress, setProgress] = useState(0);
+
+  const reduced = useReducedMotion();
+  const spotRef = useRef(null);
+  const typed = useTypewriter(rotatingWords, { enabled: !reduced });
 
   const perPage = 6;
+
+  /* Luz que sigue el cursor (sin re-render por rendimiento) */
+  useEffect(() => {
+    if (reduced) return;
+    const move = (e) => {
+      const el = spotRef.current;
+      if (el) el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, [reduced]);
+
+  /* Barra de progreso al hacer scroll */
+  useEffect(() => {
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      setProgress(max > 0 ? (doc.scrollTop / max) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [section]);
+
+  /* Inclinación 3D de las tarjetas al mover el mouse */
+  function handleTilt(e) {
+    if (reduced) return;
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--rx", (0.5 - py) * 9 + "deg");
+    el.style.setProperty("--ry", (px - 0.5) * 11 + "deg");
+  }
+
+  function resetTilt(e) {
+    const el = e.currentTarget;
+    el.style.setProperty("--rx", "0deg");
+    el.style.setProperty("--ry", "0deg");
+  }
 
   async function cargarProyectos() {
     try {
@@ -156,6 +287,17 @@ export default function Home() {
     .orb.o3 { width: 300px; height: 300px; top: 40%; left: 55%; background: rgba(139,92,246,0.30); animation: drift1 22s ease-in-out infinite; }
     @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px, 50px); } }
     @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px, -40px); } }
+
+    /* Luz que sigue el cursor */
+    .spotlight { position: fixed; top: 0; left: 0; width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%; pointer-events: none; z-index: 2; background: radial-gradient(circle, rgba(249,115,22,0.12), rgba(236,72,153,0.05) 45%, transparent 65%); mix-blend-mode: screen; will-change: transform; }
+
+    /* Barra de progreso de scroll */
+    .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; background: transparent; pointer-events: none; }
+    .progress > i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-2), var(--brand-3)); box-shadow: 0 0 12px rgba(249,115,22,0.6); transition: width .1s linear; }
+
+    /* Cursor de la máquina de escribir */
+    .caret { display: inline-block; width: 3px; height: 0.9em; margin-left: 4px; vertical-align: baseline; border-radius: 2px; background: var(--brand); animation: blink 1s steps(1) infinite; -webkit-text-fill-color: var(--brand); }
+    @keyframes blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
 
     .nav { position: sticky; top: 0; z-index: 50; padding: 16px 7%; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: rgba(12,6,17,0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
     .brand { display: flex; align-items: center; gap: 13px; min-width: 0; }
@@ -227,9 +369,9 @@ export default function Home() {
     .sectionHead { max-width: 640px; margin-bottom: 8px; }
 
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-    .card { position: relative; background: var(--glass); border: 1px solid var(--line-strong); border-radius: 24px; padding: 26px; box-shadow: 0 18px 55px rgba(0,0,0,0.20); transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease; overflow: hidden; }
+    .card { --rx: 0deg; --ry: 0deg; --ty: 0px; position: relative; background: var(--glass); border: 1px solid var(--line-strong); border-radius: 24px; padding: 26px; box-shadow: 0 18px 55px rgba(0,0,0,0.20); transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--ty)); transform-style: preserve-3d; transition: transform .18s ease, border-color .28s ease, box-shadow .28s ease; overflow: hidden; }
     .card::after { content: ""; position: absolute; inset: 0; border-radius: 24px; padding: 1px; background: linear-gradient(135deg, rgba(249,115,22,0.4), transparent 40%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .28s ease; pointer-events: none; }
-    .card:hover { transform: translateY(-8px); border-color: rgba(249,115,22,0.35); box-shadow: 0 32px 80px rgba(249,115,22,0.14); }
+    .card:hover { --ty: -8px; border-color: rgba(249,115,22,0.35); box-shadow: 0 32px 80px rgba(249,115,22,0.14); }
     .card:hover::after { opacity: 1; }
     .card h3 { margin: 0 0 10px; font-size: 21px; }
     .card p { font-size: 15px; }
@@ -338,7 +480,12 @@ export default function Home() {
     <>
       <style>{css}</style>
 
+      <div className="progress" aria-hidden="true">
+        <i style={{ width: progress + "%" }} />
+      </div>
+
       <main className="site">
+        {!reduced && <div className="spotlight" ref={spotRef} aria-hidden="true" />}
         <div className="orb o1" />
         <div className="orb o2" />
         <div className="orb o3" />
@@ -384,7 +531,10 @@ export default function Home() {
                   <span className="eyebrow">Nuevo episodio disponible</span>
                   <h1>
                     El podcast de mis
-                    <span className="grad">proyectos web.</span>
+                    <span className="grad">
+                      {typed}
+                      <span className="caret" aria-hidden="true" />
+                    </span>
                   </h1>
                   <p className="lead">
                     Soy <b style={{ color: "var(--ink)" }}>Lenin Johan Cojal Valle</b>. Aquí presento
@@ -425,7 +575,9 @@ export default function Home() {
 
                   <div className="stats">
                     <div className="stat">
-                      <b>{projects.length}+</b>
+                      <b>
+                        <CountUp end={projects.length} suffix="+" enabled={!reduced} />
+                      </b>
                       <span>Episodios</span>
                     </div>
                     <div className="stat">
@@ -454,7 +606,13 @@ export default function Home() {
 
                 <div className="cards">
                   {services.map((s, i) => (
-                    <div className="card rise" style={{ animationDelay: i * 0.08 + "s" }} key={s.title}>
+                    <div
+                      className="card rise"
+                      style={{ animationDelay: i * 0.08 + "s" }}
+                      key={s.title}
+                      onMouseMove={handleTilt}
+                      onMouseLeave={resetTilt}
+                    >
                       <div className="icon">{s.icon}</div>
                       <h3>{s.title}</h3>
                       <p>{s.text}</p>
@@ -477,7 +635,9 @@ export default function Home() {
                     <div className="skill" key={s.name}>
                       <div className="top">
                         <span className="name">{s.name}</span>
-                        <span className="pct">{s.level}%</span>
+                        <span className="pct">
+                          <CountUp end={s.level} suffix="%" enabled={!reduced} />
+                        </span>
                       </div>
                       <div className="bar">
                         <i style={{ width: s.level + "%" }} />
@@ -513,6 +673,8 @@ export default function Home() {
                           className="card projectCard rise"
                           style={{ animationDelay: i * 0.08 + "s" }}
                           key={project.id}
+                          onMouseMove={handleTilt}
+                          onMouseLeave={resetTilt}
                         >
                           <div className="projectThumb">
                             <img src={project.image || "/projects/default.svg"} alt={project.name} />
