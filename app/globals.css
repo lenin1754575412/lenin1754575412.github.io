@@ -1,13 +1,13 @@
 :root {
-  --bg: #0c0611;
-  --bg-2: #160a20;
-  --bg-3: #07050b;
+  --bg: #05060f;
+  --bg-2: #0b1026;
+  --bg-3: #03040a;
   --ink: #fdf6ee;
   --ink-soft: #f3d9c0;
   --muted: #c9b3d6;
-  --brand: #f97316;
-  --brand-2: #ec4899;
-  --brand-3: #8b5cf6;
+  --brand: #22d3ee;
+  --brand-2: #a855f7;
+  --brand-3: #6366f1;
   --line: rgba(255, 255, 255, 0.10);
   --line-strong: rgba(255, 255, 255, 0.16);
   --glass: rgba(255, 255, 255, 0.05);
