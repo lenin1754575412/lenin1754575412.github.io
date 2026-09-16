@@ -1,19 +1,20 @@
 :root {
-  --bg: #05060f;
-  --bg-2: #0b1026;
-  --bg-3: #03040a;
-  --ink: #fdf6ee;
-  --ink-soft: #f3d9c0;
-  --muted: #c9b3d6;
-  --brand: #22d3ee;
-  --brand-2: #a855f7;
-  --brand-3: #6366f1;
-  --line: rgba(255, 255, 255, 0.10);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --glass: rgba(255, 255, 255, 0.05);
-  --glass-2: rgba(255, 255, 255, 0.08);
+  --bg: #030806;
+  --bg-2: #06140d;
+  --bg-3: #020604;
+  --ink: #eafff4;
+  --ink-soft: #b9f5d6;
+  --muted: #8fd6b4;
+  --brand: #39ff14;
+  --brand-2: #00e676;
+  --brand-3: #10b981;
+  --brand-soft: #9dffce;
+  --line: rgba(57, 255, 100, 0.12);
+  --line-strong: rgba(57, 255, 100, 0.20);
+  --glass: rgba(57, 255, 120, 0.05);
+  --glass-2: rgba(57, 255, 120, 0.09);
   --radius: 26px;
-  --shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  --shadow: 0 30px 90px rgba(0, 0, 0, 0.45), 0 0 60px rgba(57, 255, 20, 0.06);
 }
 
 * {
@@ -55,8 +56,8 @@ button {
 }
 
 ::selection {
-  background: rgba(249, 115, 22, 0.35);
-  color: #fff;
+  background: rgba(57, 255, 20, 0.35);
+  color: #030806;
 }
 
 /* Scrollbar */
@@ -67,9 +68,10 @@ button {
   background: var(--bg-3);
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  background: linear-gradient(180deg, var(--brand), var(--brand-3));
   border-radius: 999px;
   border: 3px solid var(--bg-3);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {

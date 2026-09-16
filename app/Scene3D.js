@@ -153,9 +153,9 @@ export default function Scene3D({ reduced = false }) {
           uTime: { value: 0 },
           uAmp: { value: 0.34 },
           uScale: { value: 0.9 },
-          uColorA: { value: new THREE.Color(0.20, 0.85, 0.95) }, // cian
-          uColorB: { value: new THREE.Color(0.66, 0.36, 1.0) },  // violeta
-          uColorC: { value: new THREE.Color(0.30, 0.45, 1.0) }   // azul
+          uColorA: { value: new THREE.Color(0.22, 1.0, 0.35) },  // verde neón
+          uColorB: { value: new THREE.Color(0.0, 0.90, 0.55) },  // verde menta
+          uColorC: { value: new THREE.Color(0.02, 0.45, 0.30) }  // verde profundo
         }
       });
 
