@@ -1,831 +1,776 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-
-/* Escena 3D (WebGL) cargada solo en el navegador */
-const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
+import { useEffect, useRef, useState } from "react";
+import anime from "animejs/lib/anime.es.js";
 
 const GITHUB_USER = "lenin1754575412";
 
-/* Palabras que se escriben solas en el título del inicio */
-const rotatingWords = [
-  "proyectos web.",
-  "sistemas.",
-  "portafolios.",
-  "páginas web.",
-  "ideas."
+const menuItems = [
+  ["inicio", "Inicio"],
+  ["servicios", "Servicios"],
+  ["habilidades", "Habilidades"],
+  ["proyectos", "Proyectos"],
+  ["contacto", "Contacto"],
 ];
 
-/* Detecta si el usuario prefiere menos animación */
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return reduced;
-}
-
-/* Efecto máquina de escribir con borrado */
-function useTypewriter(words, { speed = 85, deleteSpeed = 40, pause = 1500, enabled = true } = {}) {
-  const [text, setText] = useState(words[0]);
-  const [index, setIndex] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    if (!enabled) {
-      setText(words[0]);
-      return;
-    }
-    const current = words[index % words.length];
-    let timeout;
-
-    if (!deleting && text === current) {
-      timeout = setTimeout(() => setDeleting(true), pause);
-    } else if (deleting && text === "") {
-      setDeleting(false);
-      setIndex((i) => i + 1);
-    } else {
-      timeout = setTimeout(
-        () => {
-          setText(
-            deleting ? current.slice(0, text.length - 1) : current.slice(0, text.length + 1)
-          );
-        },
-        deleting ? deleteSpeed : speed
-      );
-    }
-    return () => clearTimeout(timeout);
-  }, [text, deleting, index, words, speed, deleteSpeed, pause, enabled]);
-
-  return text;
-}
-
-/* Número que sube desde 0 hasta el valor final */
-function CountUp({ end, duration = 1300, suffix = "", enabled = true }) {
-  const [val, setVal] = useState(enabled ? 0 : end);
-
-  useEffect(() => {
-    if (!enabled) {
-      setVal(end);
-      return;
-    }
-    let raf;
-    const start = performance.now();
-    const tick = (now) => {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(end * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [end, duration, enabled]);
-
-  return (
-    <>
-      {val}
-      {suffix}
-    </>
-  );
-}
-
-const imageMap = {
-  "lenin1754575412.github.io": "/projects/portfolio.svg",
-  "openjarvis-local": "/projects/jarvis.svg",
-  "fiestas-patronales-celendin": "/projects/fiestas.svg",
-  "peru-turismo-next": "/projects/turismo.svg"
-};
-
-const fallbackProjects = [
+const servicios = [
   {
-    id: "local-1",
-    name: "Portafolio Personal",
-    description: "Mi portafolio profesional creado con Next.js, GitHub y Vercel.",
-    html_url: "https://github.com/lenin1754575412/lenin1754575412.github.io",
-    language: "Next.js",
-    image: "/projects/portfolio.svg"
-  },
-  {
-    id: "local-2",
-    name: "OpenJarvis Local",
-    description: "Asistente local con inteligencia artificial.",
-    html_url: "https://github.com/lenin1754575412",
-    language: "Python",
-    image: "/projects/jarvis.svg"
-  },
-  {
-    id: "local-3",
-    name: "Turismo Peru",
-    description: "Portal web turistico moderno.",
-    html_url: "https://github.com/lenin1754575412",
-    language: "Next.js",
-    image: "/projects/turismo.svg"
-  }
-];
-
-const Icon = ({ paths }) => (
-  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {paths}
-  </svg>
-);
-
-const services = [
-  {
-    icon: <Icon paths={<><rect x="2.5" y="4" width="19" height="15" rx="2.5" /><path d="M2.5 8.5h19" /><circle cx="5.5" cy="6.2" r="0.6" fill="currentColor" /><circle cx="7.6" cy="6.2" r="0.6" fill="currentColor" /></>} />,
+    number: "01",
+    icon: "◈",
     title: "Páginas Web",
-    text: "Creo páginas modernas para negocios, tiendas, eventos, turismo, instituciones y presentaciones personales."
+    text: "Webs modernas, rápidas y completamente adaptadas para celular, tablet y computadora.",
   },
   {
-    icon: <Icon paths={<><path d="M3 20h18" /><rect x="4" y="11" width="3.5" height="6" rx="1" /><rect x="10" y="7" width="3.5" height="10" rx="1" /><rect x="16" y="4" width="3.5" height="13" rx="1" /></>} />,
-    title: "Sistemas de Ventas",
-    text: "Desarrollo sistemas para registrar productos, clientes, ventas, inventario, reportes y control de una tienda."
+    number: "02",
+    icon: "⌘",
+    title: "Sistemas Web",
+    text: "Sistemas para ventas, clientes, productos, inventario, administración y más.",
   },
   {
-    icon: <Icon paths={<><rect x="3" y="7" width="18" height="13" rx="2.5" /><path d="M8 7V5.5A2 2 0 0 1 10 3.5h4A2 2 0 0 1 16 5.5V7" /><path d="M3 12.5h18" /></>} />,
-    title: "Portafolios Profesionales",
-    text: "Diseño portafolios personales con proyectos, contacto, GitHub, Vercel y un estilo profesional."
+    number: "03",
+    icon: "◇",
+    title: "Portafolios",
+    text: "Portafolios profesionales para mostrar proyectos, experiencia y trabajos realizados.",
   },
   {
-    icon: <Icon paths={<><path d="M5 8h14l-1 11.5A1.5 1.5 0 0 1 16.5 21h-9A1.5 1.5 0 0 1 6 19.5L5 8Z" /><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8" /></>} />,
-    title: "Tiendas y Catálogos Web",
-    text: "Creo catálogos para mostrar productos, precios, imágenes, descripción y contacto para clientes."
+    number: "04",
+    icon: "✦",
+    title: "Diseño Responsive",
+    text: "Interfaces que se adaptan correctamente a todas las resoluciones y dispositivos.",
   },
   {
-    icon: <Icon paths={<><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" /></>} />,
-    title: "Soporte y Configuración",
-    text: "Ayudo con instalación de programas, configuración de Windows, VS Code, Node.js, GitHub y Vercel."
+    number: "05",
+    icon: "</>",
+    title: "Desarrollo",
+    text: "Proyectos desarrollados con React, Next.js, JavaScript, HTML y CSS.",
   },
   {
-    icon: <Icon paths={<><rect x="5" y="7" width="14" height="12" rx="4" /><path d="M9 4l1.5 3M15 4l-1.5 3M5 11H2.5M21.5 11H19M5 15H2.5M21.5 15H19M12 11v5M9.5 13l-1.2 1.4" /></>} />,
-    title: "Corrección de Errores",
-    text: "Soluciono errores en páginas web, proyectos Next.js, GitHub, Vercel, HTML, CSS y JavaScript."
-  }
+    number: "06",
+    icon: "⚡",
+    title: "Optimización",
+    text: "Mejoras de rendimiento, velocidad, diseño, carga y experiencia de usuario.",
+  },
 ];
 
 const skills = [
-  { name: "HTML", level: 92 },
-  { name: "CSS", level: 88 },
-  { name: "JavaScript", level: 82 },
-  { name: "React", level: 80 },
-  { name: "Next.js", level: 78 },
+  { name: "HTML", level: 94 },
+  { name: "CSS", level: 92 },
+  { name: "JavaScript", level: 88 },
+  { name: "React", level: 86 },
+  { name: "Next.js", level: 90 },
   { name: "GitHub", level: 85 },
-  { name: "VS Code", level: 90 },
-  { name: "Vercel", level: 83 }
+  { name: "Vercel", level: 88 },
+  { name: "Responsive UI", level: 93 },
+];
+
+const fallbackProjects = [
+  {
+    id: 1,
+    name: "Portafolio Personal",
+    description: "Portafolio profesional desarrollado con Next.js.",
+    html_url:
+      "https://github.com/lenin1754575412/lenin1754575412.github.io",
+    homepage:
+      "https://lenin1754575412.github.io",
+    language: "Next.js",
+  },
+];
+
+const waveBars = [
+  48, 78, 60, 90, 54, 73, 40, 86, 63, 95,
+  47, 71, 88, 52, 76, 43, 91, 66, 82, 56,
 ];
 
 export default function Home() {
+  const rootRef = useRef(null);
+
   const [section, setSection] = useState("inicio");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projects, setProjects] = useState(fallbackProjects);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [progress, setProgress] = useState(0);
 
-  const reduced = useReducedMotion();
-  const spotRef = useRef(null);
-  const typed = useTypewriter(rotatingWords, { enabled: !reduced });
+  const [projects, setProjects] = useState(null);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
-  const perPage = 6;
+  // ==========================================================
+  // ANIMACIONES DE FONDO
+  // ==========================================================
 
-  /* Luz que sigue el cursor (sin re-render por rendimiento) */
   useEffect(() => {
-    if (reduced) return;
-    const move = (e) => {
-      const el = spotRef.current;
-      if (el) el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    };
-    window.addEventListener("pointermove", move, { passive: true });
-    return () => window.removeEventListener("pointermove", move);
-  }, [reduced]);
+    if (!rootRef.current) return;
 
-  /* Barra de progreso al hacer scroll */
-  useEffect(() => {
-    const onScroll = () => {
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - doc.clientHeight;
-      setProgress(max > 0 ? (doc.scrollTop / max) * 100 : 0);
+    const reduceMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) return;
+
+    const isMobile = window.innerWidth <= 760;
+
+    if (!isMobile) {
+      anime({
+        targets: ".anime-dot",
+        translateY: () => anime.random(-40, 40),
+        translateX: () => anime.random(-25, 25),
+        scale: () => anime.random(8, 14) / 10,
+        opacity: [0.2, 0.75],
+        delay: anime.stagger(180),
+        duration: () => anime.random(3500, 6500),
+        direction: "alternate",
+        easing: "easeInOutSine",
+        loop: true,
+      });
+
+      anime({
+        targets: ".anime-ring-one",
+        rotate: 360,
+        duration: 18000,
+        easing: "linear",
+        loop: true,
+      });
+
+      anime({
+        targets: ".anime-ring-two",
+        rotate: -360,
+        duration: 24000,
+        easing: "linear",
+        loop: true,
+      });
+    }
+
+    return () => {
+      anime.remove(".anime-dot");
+      anime.remove(".anime-ring-one");
+      anime.remove(".anime-ring-two");
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // ==========================================================
+  // ANIMACIÓN AL CAMBIAR DE SECCIÓN
+  // PROYECTOS NO SE ANIMA NI SE MODIFICA
+  // ==========================================================
+
+  useEffect(() => {
+    if (section === "proyectos") return;
+
+    const reduceMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) return;
+
+    const elements = document.querySelectorAll(
+      `[data-current="${section}"] .anime-reveal`
+    );
+
+    anime.remove(elements);
+
+    anime({
+      targets: elements,
+      opacity: [0, 1],
+      translateY: [28, 0],
+      scale: [0.985, 1],
+      delay: anime.stagger(80),
+      duration: 650,
+      easing: "easeOutExpo",
+    });
   }, [section]);
 
-  /* Inclinación 3D de las tarjetas al mover el mouse */
-  function handleTilt(e) {
-    if (reduced) return;
-    const el = e.currentTarget;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width;
-    const py = (e.clientY - r.top) / r.height;
-    el.style.setProperty("--rx", (0.5 - py) * 9 + "deg");
-    el.style.setProperty("--ry", (px - 0.5) * 11 + "deg");
-  }
+  // ==========================================================
+  // HABILIDADES
+  // ==========================================================
 
-  function resetTilt(e) {
-    const el = e.currentTarget;
-    el.style.setProperty("--rx", "0deg");
-    el.style.setProperty("--ry", "0deg");
-  }
+  useEffect(() => {
+    if (section !== "habilidades") return;
 
-  async function cargarProyectos() {
+    const timeout = setTimeout(() => {
+      anime({
+        targets: ".skillFill",
+        width: (el) => el.dataset.level + "%",
+        duration: 1100,
+        delay: anime.stagger(100),
+        easing: "easeOutExpo",
+      });
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [section]);
+
+  // ==========================================================
+  // CARGAR PROYECTOS
+  // ==========================================================
+
+  async function loadProjects() {
+    if (projects || loadingProjects) return;
+
+    setLoadingProjects(true);
+
     try {
-      setLoading(true);
-
-      const res = await fetch(
-        "https://api.github.com/users/" + GITHUB_USER + "/repos?sort=updated&per_page=100"
+      const response = await fetch(
+        `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=12`
       );
-      const data = await res.json();
 
-      if (Array.isArray(data)) {
-        const repos = data
-          .filter((repo) => !repo.fork)
-          .map((repo) => ({
-            ...repo,
-            description: repo.description || "Proyecto público subido a GitHub.",
-            image: imageMap[repo.name] || "/projects/default.svg"
-          }));
-
-        setProjects(repos.length ? repos : fallbackProjects);
+      if (!response.ok) {
+        throw new Error("No se pudieron cargar los proyectos");
       }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Respuesta inválida");
+      }
+
+      const cleanProjects = data
+        .filter((project) => !project.fork)
+        .map((project) => ({
+          id: project.id,
+          name: project.name,
+          description:
+            project.description || "Proyecto publicado en GitHub.",
+          html_url: project.html_url,
+          homepage: project.homepage || "",
+          language: project.language || "GitHub",
+        }));
+
+      setProjects(
+        cleanProjects.length ? cleanProjects : fallbackProjects
+      );
     } catch (error) {
       setProjects(fallbackProjects);
     } finally {
-      setLoading(false);
+      setLoadingProjects(false);
     }
   }
 
-  useEffect(() => {
-    cargarProyectos();
-  }, []);
-
-  const totalPages = Math.max(1, Math.ceil(projects.length / perPage));
-
-  const visibleProjects = useMemo(() => {
-    const start = (page - 1) * perPage;
-    return projects.slice(start, start + perPage);
-  }, [projects, page]);
-
-  function cambiarSeccion(nombre) {
-    setSection(nombre);
+  function changeSection(nextSection) {
+    setSection(nextSection);
     setMenuOpen(false);
-    setPage(1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
 
-  const css = `
-    .site { position: relative; min-height: 100vh; background:
-      radial-gradient(1200px 600px at 15% -10%, rgba(34,211,238,0.18), transparent 55%),
-      radial-gradient(1000px 700px at 100% 0%, rgba(168,85,247,0.16), transparent 50%),
-      linear-gradient(160deg, #05060f, #0b1026 45%, #03040a);
-      overflow: hidden; }
-
-    /* Floating light orbs */
-    .orb { position: fixed; border-radius: 50%; filter: blur(70px); opacity: 0.5; pointer-events: none; z-index: 0; }
-    .orb.o1 { width: 420px; height: 420px; top: -120px; left: -80px; background: rgba(34,211,238,0.45); animation: drift1 16s ease-in-out infinite; }
-    .orb.o2 { width: 360px; height: 360px; bottom: -100px; right: -60px; background: rgba(168,85,247,0.40); animation: drift2 19s ease-in-out infinite; }
-    .orb.o3 { width: 300px; height: 300px; top: 40%; left: 55%; background: rgba(99,102,241,0.30); animation: drift1 22s ease-in-out infinite; }
-    @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px, 50px); } }
-    @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px, -40px); } }
-
-    /* Luz que sigue el cursor */
-    .spotlight { position: fixed; top: 0; left: 0; width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%; pointer-events: none; z-index: 2; background: radial-gradient(circle, rgba(34,211,238,0.12), rgba(168,85,247,0.05) 45%, transparent 65%); mix-blend-mode: screen; will-change: transform; }
-
-    /* Barra de progreso de scroll */
-    .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; background: transparent; pointer-events: none; }
-    .progress > i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-2), var(--brand-3)); box-shadow: 0 0 12px rgba(34,211,238,0.6); transition: width .1s linear; }
-
-    /* Cursor de la máquina de escribir */
-    .caret { display: inline-block; width: 3px; height: 0.9em; margin-left: 4px; vertical-align: baseline; border-radius: 2px; background: var(--brand); animation: blink 1s steps(1) infinite; -webkit-text-fill-color: var(--brand); }
-    @keyframes blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
-
-    .nav { position: sticky; top: 0; z-index: 50; padding: 16px 7%; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: rgba(12,6,17,0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
-    .brand { display: flex; align-items: center; gap: 13px; min-width: 0; }
-    .brand .logoWrap { position: relative; flex: 0 0 auto; }
-    .brand img { width: 52px; height: 52px; border-radius: 16px; box-shadow: 0 14px 38px rgba(34,211,238,0.30); display: block; }
-    .brand .dot { position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; border-radius: 50%; background: #22c55e; border: 3px solid var(--bg); box-shadow: 0 0 0 0 rgba(34,197,94,0.6); animation: pulse 2.2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); } 70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
-    .brand h2 { margin: 0; font-size: 21px; line-height: 1.1; letter-spacing: -0.5px; }
-    .brand span { color: var(--ink-soft); font-size: 12px; font-weight: 700; letter-spacing: 0.3px; }
-
-    .menu { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .menu button { padding: 10px 16px; border-radius: 999px; color: var(--ink-soft); font-weight: 700; font-size: 14px; transition: 0.25s; border: 1px solid transparent; background: transparent; }
-    .menu button:hover { color: var(--ink); background: var(--glass); }
-    .menu button.active { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #05060f; box-shadow: 0 12px 30px rgba(34,211,238,0.28); }
-
-    .hamburger { display: none; width: 48px; height: 48px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--glass-2); align-items: center; justify-content: center; flex-direction: column; gap: 5px; }
-    .hamburger span { width: 22px; height: 3px; border-radius: 999px; background: var(--ink); transition: 0.25s; }
-    .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-    .screen { position: relative; z-index: 1; min-height: calc(100vh - 90px); padding: 48px 7%; display: flex; align-items: center; justify-content: center; }
-    .panel { width: 100%; max-width: 1240px; border-radius: 34px; padding: 44px; background:
-      radial-gradient(circle at top right, rgba(168,85,247,0.14), transparent 40%),
-      linear-gradient(150deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
-      border: 1px solid var(--line-strong); box-shadow: var(--shadow); animation: appear 0.45s cubic-bezier(.2,.7,.3,1) both; }
-    @keyframes appear { from { opacity: 0; transform: translateY(18px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-    .grid { display: grid; grid-template-columns: minmax(280px, 1.05fr) minmax(300px, 0.95fr); gap: 46px; align-items: center; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 999px; background: rgba(34,211,238,0.12); color: #7fe9ff; border: 1px solid rgba(34,211,238,0.30); font-weight: 700; font-size: 13px; letter-spacing: 0.2px; }
-    .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 10px var(--brand); }
-    h1 { margin: 22px 0 18px; font-size: clamp(40px, 6.5vw, 76px); line-height: 0.96; letter-spacing: -2.5px; }
-    h1 .grad { display: block; background: linear-gradient(90deg, #22d3ee, #eef6ff, #a855f7, #6366f1); background-size: 220%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gradientMove 5s ease-in-out infinite; }
-    @keyframes gradientMove { 0%,100% { background-position: 0%; } 50% { background-position: 100%; } }
-    h2.head { margin: 6px 0 12px; font-size: clamp(30px, 4.5vw, 50px); line-height: 1.02; letter-spacing: -1.5px; }
-    p { color: var(--muted); font-size: 17px; line-height: 1.72; margin: 0 0 6px; }
-    .lead { color: var(--ink-soft); max-width: 560px; }
-
-    .actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 28px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 24px; border-radius: 15px; font-weight: 700; font-size: 15px; transition: transform .2s ease, box-shadow .2s ease; border: 0; text-decoration: none; }
-    .btnPrimary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #05060f; box-shadow: 0 16px 40px rgba(34,211,238,0.28); }
-    .btnLight { background: var(--glass-2); color: var(--ink); border: 1px solid var(--line-strong); }
-    .btn:hover { transform: translateY(-4px); }
-    .btnPrimary:hover { box-shadow: 0 22px 50px rgba(168,85,247,0.32); }
-
-    .playerCard { border-radius: 30px; padding: 28px; background: rgba(12,6,17,0.66); border: 1px solid var(--line-strong); display: flex; flex-direction: column; gap: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
-    .cover { text-align: center; }
-    .cover img { width: 150px; height: 150px; border-radius: 32px; background: #fff; box-shadow: 0 26px 70px rgba(34,211,238,0.28); animation: floatCover 4.5s ease-in-out infinite; }
-    @keyframes floatCover { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(-1.5deg); } }
-
-    /* Escenario del render 3D (identidad estilo Spline) */
-    .scene3dStage { position: relative; width: 100%; height: 270px; display: grid; place-items: center; margin: 2px 0 6px; }
-    .scene3d { position: relative; z-index: 1; width: 100%; height: 100%; cursor: grab; touch-action: none; }
-    .scene3d canvas { width: 100% !important; height: 100% !important; display: block; }
-    .scene3dGlow { position: absolute; inset: -6% -4%; z-index: 0; background:
-      radial-gradient(circle at 50% 46%, rgba(34,211,238,0.30), rgba(168,85,247,0.15) 45%, transparent 70%);
-      filter: blur(16px); pointer-events: none; animation: gpulse 6s ease-in-out infinite; }
-    @keyframes gpulse { 0%,100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.06); opacity: 1; } }
-    .scene3d-fallback { width: 160px; height: 160px; margin: 40px auto; border-radius: 46% 54% 58% 42% / 52% 46% 54% 48%; background:
-      linear-gradient(135deg, var(--brand), var(--brand-2) 55%, var(--brand-3)); box-shadow: 0 26px 70px rgba(34,211,238,0.30);
-      animation: floatCover 4.5s ease-in-out infinite; }
-    .cover h3 { margin: 16px 0 6px; font-size: 26px; }
-    .cover p { font-size: 14px; }
-    .audioBox { padding: 18px; border-radius: 22px; background: rgba(12,6,17,0.72); border: 1px solid var(--line); }
-    .audioBox .row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 12px; }
-    .live { display: inline-flex; align-items: center; gap: 6px; color: #22d3ee; }
-    .live b { width: 8px; height: 8px; border-radius: 50%; background: #22d3ee; animation: pulse 1.6s infinite; }
-    .wave { display: flex; align-items: flex-end; gap: 4px; height: 54px; }
-    .wave span { flex: 1; min-width: 4px; border-radius: 999px; background: linear-gradient(180deg, #22d3ee, #a855f7); animation: wave 1.2s ease-in-out infinite; }
-    .wave span:nth-child(2n) { animation-delay: 0.15s; }
-    .wave span:nth-child(3n) { animation-delay: 0.30s; }
-    .wave span:nth-child(4n) { animation-delay: 0.45s; }
-    @keyframes wave { 0%,100% { height: 14px; opacity: 0.6; } 50% { height: 50px; opacity: 1; } }
-
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .stat { padding: 16px; border-radius: 18px; background: rgba(12,6,17,0.66); border: 1px solid var(--line); text-align: center; transition: 0.25s; }
-    .stat:hover { border-color: rgba(34,211,238,0.5); transform: translateY(-3px); }
-    .stat b { display: block; font-family: "Space Grotesk", sans-serif; color: #7fe9ff; font-size: 26px; }
-    .stat span { color: var(--muted); font-size: 12px; font-weight: 700; }
-
-    .sectionHead { max-width: 640px; margin-bottom: 8px; }
-
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-    .card { --rx: 0deg; --ry: 0deg; --ty: 0px; position: relative; background: var(--glass); border: 1px solid var(--line-strong); border-radius: 24px; padding: 26px; box-shadow: 0 18px 55px rgba(0,0,0,0.20); transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--ty)); transform-style: preserve-3d; transition: transform .18s ease, border-color .28s ease, box-shadow .28s ease; overflow: hidden; }
-    .card::after { content: ""; position: absolute; inset: 0; border-radius: 24px; padding: 1px; background: linear-gradient(135deg, rgba(34,211,238,0.4), transparent 40%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .28s ease; pointer-events: none; }
-    .card:hover { --ty: -8px; border-color: rgba(34,211,238,0.35); box-shadow: 0 32px 80px rgba(34,211,238,0.14); }
-    .card:hover::after { opacity: 1; }
-    .card h3 { margin: 0 0 10px; font-size: 21px; }
-    .card p { font-size: 15px; }
-    .icon { position: relative; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(34,211,238,0.24), rgba(168,85,247,0.16)); color: #7fe9ff; margin-bottom: 18px; border: 1px solid rgba(34,211,238,0.30); box-shadow: 0 10px 26px rgba(34,211,238,0.14); transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease, color .35s ease; }
-    .icon svg { transition: transform .35s cubic-bezier(.2,.7,.3,1); }
-    .card:hover .icon { transform: translateY(-4px) rotate(-6deg); color: #fff; box-shadow: 0 18px 40px rgba(168,85,247,0.30); background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
-    .card:hover .icon svg { transform: scale(1.12) rotate(6deg); }
-
-    /* Staggered entrance (backwards keeps cards hidden during their delay,
-       and lets normal :hover transforms work once the animation ends) */
-    .rise { animation: rise .6s cubic-bezier(.2,.7,.3,1) backwards; }
-    @keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-    /* Skills */
-    .skillGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 30px; }
-    .skill { padding: 20px 22px; border-radius: 20px; background: var(--glass); border: 1px solid var(--line); }
-    .skill .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .skill .name { font-weight: 700; font-size: 16px; }
-    .skill .pct { color: #7fe9ff; font-weight: 700; font-size: 14px; font-family: "Space Grotesk", sans-serif; }
-    .bar { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
-    .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); animation: fill 1.1s cubic-bezier(.2,.7,.3,1) both; }
-    @keyframes fill { from { width: 0 !important; } }
-
-    /* Projects */
-    .projectCard { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-    .projectThumb { position: relative; overflow: hidden; }
-    .projectThumb img { width: 100%; height: 168px; object-fit: cover; display: block; transition: transform .5s ease; }
-    .projectCard:hover .projectThumb img { transform: scale(1.06); }
-    .projectThumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(12,6,17,0.55)); }
-    .playBtn { position: absolute; left: 16px; bottom: 16px; z-index: 2; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; color: #05060f; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 10px 26px rgba(34,211,238,0.45); transform: translateY(8px) scale(.85); opacity: 0; transition: transform .35s cubic-bezier(.2,.7,.3,1), opacity .35s ease; }
-    .playBtn svg { margin-left: 2px; }
-    .projectCard:hover .playBtn { opacity: 1; transform: translateY(0) scale(1); animation: playPulse 1.8s ease-in-out infinite .35s; }
-    @keyframes playPulse { 0%,100% { box-shadow: 0 10px 26px rgba(34,211,238,0.45), 0 0 0 0 rgba(34,211,238,0.5); } 50% { box-shadow: 0 10px 26px rgba(34,211,238,0.45), 0 0 0 12px rgba(34,211,238,0); } }
-    .projectBody { padding: 22px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-    .badge { display: inline-block; width: fit-content; padding: 6px 12px; border-radius: 999px; background: rgba(34,211,238,0.14); color: #7fe9ff; font-weight: 700; font-size: 12px; margin-bottom: 12px; border: 1px solid rgba(34,211,238,0.25); }
-    .projectBody h3 { font-size: 20px; margin: 0 0 8px; }
-    .projectBody p { font-size: 14px; }
-    .projectButtons { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
-    .projectLink { display: inline-flex; align-items: center; gap: 6px; padding: 11px 16px; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #05060f; font-weight: 700; font-size: 14px; text-decoration: none; transition: transform .25s ease, box-shadow .25s ease; }
-    .projectLink:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(34,211,238,0.28); }
-    .projectLive { background: transparent; color: #7fe9ff; border: 1.5px solid rgba(34,211,238,0.6); }
-    .projectLive:hover { background: rgba(34,211,238,0.12); }
-
-    .skeletonGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-    .skeleton { height: 300px; border-radius: 24px; background: linear-gradient(100deg, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border: 1px solid var(--line); }
-    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
-    .pager { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 30px; color: var(--ink-soft); font-weight: 700; }
-    .pager button { padding: 11px 18px; border-radius: 12px; border: 1px solid rgba(34,211,238,0.30); background: var(--glass-2); color: var(--ink); font-weight: 700; transition: 0.2s; }
-    .pager button:hover:not(:disabled) { background: rgba(34,211,238,0.14); transform: translateY(-2px); }
-    .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* Contact */
-    .contactGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 30px; }
-    .contactCard { display: flex; align-items: center; gap: 16px; padding: 22px; border-radius: 20px; background: var(--glass); border: 1px solid var(--line-strong); transition: 0.25s; }
-    .contactCard:hover { transform: translateY(-5px); border-color: rgba(34,211,238,0.4); }
-    .contactCard .icon { margin: 0; flex: 0 0 auto; }
-    .contactCard .label { color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .contactCard .value { font-size: 16px; font-weight: 700; word-break: break-word; }
-
-    .footer { position: relative; z-index: 1; padding: 34px 7% 44px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; border-top: 1px solid var(--line); }
-    .footBrand { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.3px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .footYear { color: var(--muted); font-size: 13px; }
-
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-      .panel { padding: 34px; }
+    if (nextSection === "proyectos") {
+      loadProjects();
     }
-    @media (max-width: 650px) {
-      .nav { padding: 12px 5%; }
-      .brand img { width: 46px; height: 46px; border-radius: 14px; }
-      .brand h2 { font-size: 19px; }
-      .brand span { font-size: 11px; }
-      .hamburger { display: flex; }
-      .menu { display: none; position: absolute; top: 74px; left: 5%; right: 5%; flex-direction: column; align-items: stretch; gap: 8px; padding: 14px; border-radius: 22px; background: rgba(12,6,17,0.97); border: 1px solid var(--line-strong); box-shadow: 0 22px 60px rgba(0,0,0,0.35); }
-      .menu.open { display: flex; animation: menuDown 0.25s ease both; }
-      @keyframes menuDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-      .menu button { width: 100%; text-align: center; padding: 13px 15px; }
-      .screen { padding: 30px 5%; align-items: flex-start; }
-      .panel { padding: 24px; border-radius: 26px; }
-      h1 { font-size: 40px; letter-spacing: -1.2px; }
-      h2.head { font-size: 30px; letter-spacing: -1px; }
-      p { font-size: 15px; }
-      .actions { flex-direction: column; }
-      .btn { width: 100%; }
-      .cover img { width: 120px; height: 120px; }
-      .scene3dStage { height: 210px; }
-      .stats { grid-template-columns: repeat(3, 1fr); }
-      .stat b { font-size: 20px; }
-      .stat span { font-size: 10px; }
-    }
-  `;
 
-  function menuButton(nombre, texto) {
-    return (
-      <button
-        type="button"
-        className={section === nombre ? "active" : ""}
-        onClick={() => cambiarSeccion(nombre)}
-      >
-        {texto}
-      </button>
-    );
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   return (
-    <>
-      <style>{css}</style>
+    <div ref={rootRef} className="site">
+      {/* FONDO ANIMADO */}
 
-      <div className="progress" aria-hidden="true">
-        <i style={{ width: progress + "%" }} />
+      <div className="ambient" aria-hidden="true">
+        <div className="ambientGlow glowOne" />
+        <div className="ambientGlow glowTwo" />
+
+        <span className="anime-dot dot1" />
+        <span className="anime-dot dot2" />
+        <span className="anime-dot dot3" />
+        <span className="anime-dot dot4" />
+        <span className="anime-dot dot5" />
       </div>
 
-      <main className="site">
-        {!reduced && <div className="spotlight" ref={spotRef} aria-hidden="true" />}
-        <div className="orb o1" />
-        <div className="orb o2" />
-        <div className="orb o3" />
+      {/* HEADER */}
 
-        <nav className="nav">
-          <div className="brand">
-            <div className="logoWrap">
-              <img src="/logo.svg" alt="Logo Lenin Johan" />
-              <span className="dot" />
-            </div>
-            <div>
-              <h2>Lenin Johan</h2>
-              <span>Portafolio · Podcast</span>
-            </div>
+      <header className="header">
+        <button
+          className="brand"
+          onClick={() => changeSection("inicio")}
+        >
+          <div className="logoWrap">
+            <img
+              src="/logo.svg"
+              alt="Lenin Johan"
+              width="55"
+              height="55"
+            />
+
+            <span className="onlineDot" />
           </div>
 
-          <button
-            className={menuOpen ? "hamburger open" : "hamburger"}
-            type="button"
-            aria-label="Abrir menú"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-
-          <div className={menuOpen ? "menu open" : "menu"}>
-            {menuButton("inicio", "Inicio")}
-            {menuButton("servicios", "Servicios")}
-            {menuButton("habilidades", "Habilidades")}
-            {menuButton("proyectos", "Proyectos")}
-            {menuButton("contacto", "Contacto")}
+          <div className="brandText">
+            <strong>Lenin Johan</strong>
+            <span>Portafolio · Podcast</span>
           </div>
+        </button>
+
+        <button
+          className={`hamburger ${menuOpen ? "active" : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Abrir menú"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <nav className={`nav ${menuOpen ? "open" : ""}`}>
+          {menuItems.map(([id, label]) => (
+            <button
+              key={id}
+              className={section === id ? "active" : ""}
+              onClick={() => changeSection(id)}
+            >
+              {label}
+            </button>
+          ))}
         </nav>
+      </header>
 
-        <section className="screen">
-          <div className="panel" key={section}>
-            {section === "inicio" && (
-              <div className="grid">
-                <div>
-                  <span className="eyebrow">Nuevo episodio disponible</span>
-                  <h1>
-                    El podcast de mis
-                    <span className="grad">
-                      {typed}
-                      <span className="caret" aria-hidden="true" />
-                    </span>
-                  </h1>
-                  <p className="lead">
-                    Soy <b style={{ color: "var(--ink)" }}>Lenin Johan Cojal Valle</b>. Aquí presento
-                    mis servicios y proyectos: páginas web, sistemas, portafolios y trabajos hechos
-                    con Next.js, React, GitHub y Vercel.
-                  </p>
+      <main>
+        {/* ====================================================
+            INICIO
+        ==================================================== */}
 
-                  <div className="actions">
-                    <button className="btn btnPrimary" onClick={() => cambiarSeccion("proyectos")}>
-                      ▶ Ver proyectos
-                    </button>
-                    <button className="btn btnLight" onClick={() => cambiarSeccion("contacto")}>
-                      Contactarme
-                    </button>
-                  </div>
+        {section === "inicio" && (
+          <section
+            className="homeHero"
+            data-current="inicio"
+          >
+            <div className="heroGrid">
+              <div className="heroContent">
+                <div className="statusBadge anime-reveal">
+                  <span className="pulseDot" />
+                  Disponible para nuevos proyectos
                 </div>
 
-                <div className="playerCard">
-                  <div className="cover">
-                    <div className="scene3dStage">
-                      <span className="scene3dGlow" aria-hidden="true" />
-                      <Scene3D reduced={reduced} />
-                    </div>
-                    <h3>Lenin Johan Show</h3>
-                    <p>Render 3D en vivo · Frontend Developer</p>
+                <div className="heroEyebrow anime-reveal">
+                  PORTAFOLIO DIGITAL / 2026
+                </div>
+
+                <h1 className="anime-reveal">
+                  Creo experiencias
+                  <span> digitales</span>
+                  <br />
+                  que se sienten
+                  <em> vivas.</em>
+                </h1>
+
+                <p className="heroDescription anime-reveal">
+                  Soy <strong>Lenin Johan Cojal Valle</strong>.
+                  Desarrollo páginas web, sistemas y experiencias
+                  interactivas usando Next.js, React, GitHub y
+                  Vercel.
+                </p>
+
+                <div className="heroActions anime-reveal">
+                  <button
+                    className="mainButton"
+                    onClick={() => changeSection("proyectos")}
+                  >
+                    <span className="playIcon">▶</span>
+
+                    <span>
+                      Ver proyectos
+                      <small>Mis últimos trabajos</small>
+                    </span>
+
+                    <b>↗</b>
+                  </button>
+
+                  <button
+                    className="outlineButton"
+                    onClick={() => changeSection("contacto")}
+                  >
+                    Contactarme
+                  </button>
+                </div>
+
+                <div className="miniStats anime-reveal">
+                  <div>
+                    <strong>12+</strong>
+                    <span>Proyectos</span>
                   </div>
 
-                  <div className="audioBox">
-                    <div className="row">
-                      <span>Temporada 01 · Proyectos y código</span>
-                      <span className="live">
-                        <b></b> EN VIVO
+                  <i />
+
+                  <div>
+                    <strong>Next.js</strong>
+                    <span>Framework</span>
+                  </div>
+
+                  <i />
+
+                  <div>
+                    <strong>100%</strong>
+                    <span>Responsive</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="visualSide anime-reveal">
+                <div className="visualCard">
+                  <div className="visualTop">
+                    <span>
+                      <i />
+                      LIVE SYSTEM
+                    </span>
+
+                    <small>01 / 06</small>
+                  </div>
+
+                  <div className="orbStage">
+                    <div className="anime-ring-one orbitRing ringOne" />
+                    <div className="anime-ring-two orbitRing ringTwo" />
+
+                    <div className="orbGlow" />
+
+                    <div className="mainOrb">
+                      <div className="orbInside" />
+                    </div>
+
+                    <div className="orbitDot orbitDotOne" />
+                    <div className="orbitDot orbitDotTwo" />
+                  </div>
+
+                  <div className="showInfo">
+                    <div>
+                      <small>NOW PLAYING</small>
+
+                      <h2>Lenin Johan Show</h2>
+
+                      <p>Frontend · Design · Development</p>
+                    </div>
+
+                    <button>▶</button>
+                  </div>
+
+                  <div className="audioPanel">
+                    <div className="audioHeader">
+                      <strong>
+                        Temporada 01 · Proyectos y código
+                      </strong>
+
+                      <span>
+                        <i />
+                        EN VIVO
                       </span>
                     </div>
+
                     <div className="wave">
-                      {Array.from({ length: 22 }).map((_, i) => (
-                        <span key={i} />
+                      {waveBars.map((height, index) => (
+                        <b
+                          key={index}
+                          style={{
+                            "--bar-height": `${height}%`,
+                            "--delay": `${index * 0.04}s`,
+                          }}
+                        />
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
-                  <div className="stats">
-                    <div className="stat">
-                      <b>
-                        <CountUp end={projects.length} suffix="+" enabled={!reduced} />
-                      </b>
-                      <span>Episodios</span>
+        {/* ====================================================
+            SERVICIOS
+        ==================================================== */}
+
+        {section === "servicios" && (
+          <section
+            className="animatedSection"
+            data-current="servicios"
+          >
+            <div className="sectionTop anime-reveal">
+              <span className="sectionNumber">01</span>
+
+              <div>
+                <span className="miniTitle">SERVICIOS</span>
+
+                <h2>
+                  Diseño, código y
+                  <span> creatividad.</span>
+                </h2>
+
+                <p>
+                  Desarrollo experiencias digitales modernas con
+                  atención al diseño, rendimiento y adaptación a
+                  dispositivos móviles.
+                </p>
+              </div>
+            </div>
+
+            <div className="servicesGrid">
+              {servicios.map((service) => (
+                <article
+                  className="serviceCard anime-reveal"
+                  key={service.title}
+                >
+                  <div className="serviceTop">
+                    <span className="serviceNumber">
+                      {service.number}
+                    </span>
+
+                    <div className="serviceIcon">
+                      {service.icon}
                     </div>
-                    <div className="stat">
-                      <b>Next</b>
-                      <span>Framework</span>
+                  </div>
+
+                  <h3>{service.title}</h3>
+
+                  <p>{service.text}</p>
+
+                  <div className="serviceLine" />
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ====================================================
+            HABILIDADES
+        ==================================================== */}
+
+        {section === "habilidades" && (
+          <section
+            className="animatedSection"
+            data-current="habilidades"
+          >
+            <div className="sectionTop anime-reveal">
+              <span className="sectionNumber">02</span>
+
+              <div>
+                <span className="miniTitle">STACK</span>
+
+                <h2>
+                  Herramientas que
+                  <span> utilizo.</span>
+                </h2>
+
+                <p>
+                  Tecnologías que utilizo para construir interfaces,
+                  sistemas y proyectos web.
+                </p>
+              </div>
+            </div>
+
+            <div className="skillsArea">
+              <div className="skillsList">
+                {skills.map((skill, index) => (
+                  <article
+                    className="skillItem anime-reveal"
+                    key={skill.name}
+                  >
+                    <div className="skillInfo">
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <strong>{skill.name}</strong>
+
+                      <em>{skill.level}%</em>
                     </div>
-                    <div className="stat">
-                      <b>Vercel</b>
-                      <span>Publicado</span>
+
+                    <div className="skillTrack">
+                      <div
+                        className="skillFill"
+                        data-level={skill.level}
+                      />
                     </div>
+                  </article>
+                ))}
+              </div>
+
+              <div className="techPanel anime-reveal">
+                <div className="terminalTop">
+                  <span />
+                  <span />
+                  <span />
+
+                  <p>portfolio.js</p>
+                </div>
+
+                <div className="terminalCode">
+                  <p>
+                    <span>const</span> developer = {"{"}
+                  </p>
+
+                  <p>
+                    &nbsp;&nbsp;name:
+                    <em> "Lenin Johan"</em>,
+                  </p>
+
+                  <p>
+                    &nbsp;&nbsp;frontend:
+                    <em> true</em>,
+                  </p>
+
+                  <p>
+                    &nbsp;&nbsp;responsive:
+                    <em> true</em>,
+                  </p>
+
+                  <p>
+                    &nbsp;&nbsp;creative:
+                    <em> true</em>
+                  </p>
+
+                  <p>{"};"}</p>
+
+                  <div className="terminalCursor">
+                    _
                   </div>
                 </div>
               </div>
-            )}
+            </div>
+          </section>
+        )}
 
-            {section === "servicios" && (
-              <div>
-                <div className="sectionHead">
-                  <span className="eyebrow">Servicios</span>
-                  <h2 className="head">Lo que puedo hacer.</h2>
-                  <p>
-                    Estos son los servicios que ofrezco: páginas web, sistemas de ventas,
-                    portafolios, catálogos, soporte técnico y corrección de errores.
-                  </p>
-                </div>
+        {/* ====================================================
+            PROYECTOS
+            SE MANTIENE SIN ANIMACIONES Y CON LOS DOS BOTONES
+        ==================================================== */}
 
-                <div className="cards">
-                  {services.map((s, i) => (
-                    <div
-                      className="card rise"
-                      style={{ animationDelay: i * 0.08 + "s" }}
-                      key={s.title}
-                      onMouseMove={handleTilt}
-                      onMouseLeave={resetTilt}
-                    >
-                      <div className="icon">{s.icon}</div>
-                      <h3>{s.title}</h3>
-                      <p>{s.text}</p>
-                    </div>
-                  ))}
-                </div>
+        {section === "proyectos" && (
+          <section className="contentSection">
+            <div className="sectionHeader">
+              <span className="miniTitle">PROYECTOS</span>
+
+              <h2>
+                Proyectos de <span>GitHub.</span>
+              </h2>
+
+              <p>
+                Los proyectos se cargan solamente cuando visitas esta
+                sección para que la página inicial abra más rápido.
+              </p>
+            </div>
+
+            {loadingProjects && (
+              <div className="loading">
+                <span />
+                Cargando proyectos...
               </div>
             )}
 
-            {section === "habilidades" && (
-              <div>
-                <div className="sectionHead">
-                  <span className="eyebrow">Tecnologías</span>
-                  <h2 className="head">Habilidades principales.</h2>
-                  <p>Herramientas que uso para crear interfaces limpias, modernas y responsive.</p>
-                </div>
+            {!loadingProjects && projects && (
+              <div className="projectsGrid">
+                {projects.map((project) => (
+                  <article
+                    className="projectCard"
+                    key={project.id}
+                  >
+                    <div className="projectTop">
+                      <div className="projectNumber">
+                        {"</>"}
+                      </div>
 
-                <div className="skillGrid">
-                  {skills.map((s) => (
-                    <div className="skill" key={s.name}>
-                      <div className="top">
-                        <span className="name">{s.name}</span>
-                        <span className="pct">
-                          <CountUp end={s.level} suffix="%" enabled={!reduced} />
-                        </span>
-                      </div>
-                      <div className="bar">
-                        <i style={{ width: s.level + "%" }} />
-                      </div>
+                      <span className="language">
+                        {project.language}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            {section === "proyectos" && (
-              <div>
-                <div className="sectionHead">
-                  <span className="eyebrow">Episodios de GitHub</span>
-                  <h2 className="head">Mis proyectos recientes.</h2>
-                  <p>
-                    Cada repositorio público aparece como un episodio. Cuando subas nuevos proyectos
-                    a GitHub, aparecerán aquí automáticamente.
-                  </p>
-                </div>
+                    <h3>{project.name}</h3>
 
-                {loading ? (
-                  <div className="skeletonGrid">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div className="skeleton" key={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <>
-                    <div className="cards">
-                      {visibleProjects.map((project, i) => (
-                        <div
-                          className="card projectCard rise"
-                          style={{ animationDelay: i * 0.08 + "s" }}
-                          key={project.id}
-                          onMouseMove={handleTilt}
-                          onMouseLeave={resetTilt}
+                    <p>{project.description}</p>
+
+                    <div className="projectActions">
+                      <a
+                        className="projectButton codeButton"
+                        href={project.html_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <span>{"</>"}</span>
+                        Ver código
+                      </a>
+
+                      {project.homepage && (
+                        <a
+                          className="projectButton pageButton"
+                          href={project.homepage}
+                          target="_blank"
+                          rel="noreferrer"
                         >
-                          <div className="projectThumb">
-                            <img src={project.image || "/projects/default.svg"} alt={project.name} />
-                            <span className="playBtn" aria-hidden="true">
-                              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            </span>
-                          </div>
-
-                          <div className="projectBody">
-                            <div>
-                              <span className="badge">{project.language || "GitHub"}</span>
-                              <h3>{project.name}</h3>
-                              <p>{project.description || "Proyecto público subido a GitHub."}</p>
-                            </div>
-
-                            <div className="projectButtons">
-                              <a
-                                href={project.html_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="projectLink"
-                              >
-                                Ver código
-                              </a>
-
-                              {project.homepage && (
-                                <a
-                                  href={project.homepage}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="projectLink projectLive"
-                                >
-                                  Ver página
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                          <span>↗</span>
+                          Ver página
+                        </a>
+                      )}
                     </div>
-
-                    {totalPages > 1 && (
-                      <div className="pager">
-                        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                          ← Anterior
-                        </button>
-                        <span>
-                          Página {page} de {totalPages}
-                        </span>
-                        <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-                          Siguiente →
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+                  </article>
+                ))}
               </div>
             )}
+          </section>
+        )}
 
-            {section === "contacto" && (
-              <div>
-                <div className="sectionHead">
-                  <span className="eyebrow">Contacto</span>
-                  <h2 className="head">Hablemos de tu próximo proyecto.</h2>
-                  <p>
-                    Puedo ayudarte a crear páginas web, portafolios, sistemas simples y proyectos
-                    modernos con estilo profesional.
-                  </p>
-                </div>
+        {/* ====================================================
+            CONTACTO
+        ==================================================== */}
 
-                <div className="contactGrid">
-                  <div className="contactCard">
-                    <div className="icon">◕</div>
-                    <div>
-                      <div className="label">Nombre</div>
-                      <div className="value">Lenin Johan Cojal Valle</div>
-                    </div>
+        {section === "contacto" && (
+          <section
+            className="contactNew"
+            data-current="contacto"
+          >
+            <div className="contactGlow" />
+
+            <div className="contactContent">
+              <div className="anime-reveal">
+                <span className="miniTitle">
+                  CONTACTO / 04
+                </span>
+
+                <h2>
+                  ¿Tienes una idea?
+                  <br />
+                  <span>Hagámosla realidad.</span>
+                </h2>
+
+                <p>
+                  Si necesitas una página web, sistema, portafolio o
+                  quieres mejorar un proyecto existente, puedes
+                  contactarme directamente.
+                </p>
+              </div>
+
+              <div className="contactActions anime-reveal">
+                <a
+                  className="bigMail"
+                  href="mailto:cojalvallelenin919@gmail.com"
+                >
+                  <div>
+                    <small>ENVIAR MENSAJE</small>
+                    <strong>
+                      cojalvallelenin919@gmail.com
+                    </strong>
                   </div>
 
-                  <a
-                    className="contactCard"
-                    href={"https://github.com/" + GITHUB_USER}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <div className="icon">⌥</div>
-                    <div>
-                      <div className="label">GitHub</div>
-                      <div className="value">{GITHUB_USER}</div>
-                    </div>
-                  </a>
+                  <span>↗</span>
+                </a>
 
-                  <a
-                    className="contactCard"
-                    href="mailto:cojalvallelenin919@gmail.com"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <div className="icon">✉</div>
-                    <div>
-                      <div className="label">Correo</div>
-                      <div className="value">cojalvallelenin919@gmail.com</div>
-                    </div>
-                  </a>
-                </div>
+                <div className="contactMiniGrid">
+                  <div>
+                    <small>NOMBRE</small>
+                    <strong>
+                      Lenin Johan Cojal Valle
+                    </strong>
+                  </div>
 
-                <div className="actions">
-                  <a className="btn btnPrimary" href="mailto:cojalvallelenin919@gmail.com">
-                    ✉ Enviar correo
-                  </a>
-                  <a
-                    className="btn btnLight"
-                    href={"https://github.com/" + GITHUB_USER}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver GitHub
-                  </a>
+                  <div>
+                    <small>GITHUB</small>
+                    <strong>
+                      @{GITHUB_USER}
+                    </strong>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-        </section>
-
-        <footer className="footer">
-          <span className="footBrand">Lenin Johan Cojal Valle</span>
-          <span className="footYear">© {new Date().getFullYear()} · Todos los derechos reservados</span>
-        </footer>
+            </div>
+          </section>
+        )}
       </main>
-    </>
+
+      <footer className="footer">
+        <strong>Lenin Johan Cojal Valle</strong>
+
+        <span>
+          Diseño · Desarrollo · Creatividad
+        </span>
+
+        <small>
+          © 2026 · Todos los derechos reservados
+        </small>
+      </footer>
+    </div>
   );
 }
