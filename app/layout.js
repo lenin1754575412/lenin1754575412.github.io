@@ -1,4 +1,6 @@
-﻿import "./globals.css";
+import "./theme.css";
+import ThemeToggle from "./ThemeToggle";
+import "./globals.css";
 
 export const metadata = {
   title: "Lenin Johan Cojal Valle | Portafolio",
@@ -20,7 +22,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
 
-      <body>{children}</body>
+      <body><ThemeToggle />{children}</body>
     </html>
   );
 }

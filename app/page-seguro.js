@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs/lib/anime.es.js";
@@ -16,26 +16,26 @@ const menuItems = [
 const servicios = [
   {
     number: "01",
-    icon: "◈",
-    title: "Páginas Web",
-    text: "Webs modernas, rápidas y completamente adaptadas para celular, tablet y computadora.",
+    icon: "?",
+    title: "P�ginas Web",
+    text: "Webs modernas, r�pidas y completamente adaptadas para celular, tablet y computadora.",
   },
   {
     number: "02",
-    icon: "⌘",
+    icon: "?",
     title: "Sistemas Web",
-    text: "Sistemas para ventas, clientes, productos, inventario, administración y más.",
+    text: "Sistemas para ventas, clientes, productos, inventario, administraci�n y m�s.",
   },
   {
     number: "03",
-    icon: "◇",
+    icon: "?",
     title: "Portafolios",
     text: "Portafolios profesionales para mostrar proyectos, experiencia y trabajos realizados.",
   },
   {
     number: "04",
-    icon: "✦",
-    title: "Diseño Responsive",
+    icon: "?",
+    title: "Dise�o Responsive",
     text: "Interfaces que se adaptan correctamente a todas las resoluciones y dispositivos.",
   },
   {
@@ -46,9 +46,9 @@ const servicios = [
   },
   {
     number: "06",
-    icon: "⚡",
-    title: "Optimización",
-    text: "Mejoras de rendimiento, velocidad, diseño, carga y experiencia de usuario.",
+    icon: "?",
+    title: "Optimizaci�n",
+    text: "Mejoras de rendimiento, velocidad, dise�o, carga y experiencia de usuario.",
   },
 ];
 
@@ -143,7 +143,7 @@ export default function Home() {
   }, []);
 
   // ==========================================================
-  // ANIMACIÓN AL CAMBIAR DE SECCIÓN
+  // ANIMACI�N AL CAMBIAR DE SECCI�N
   // PROYECTOS NO SE ANIMA NI SE MODIFICA
   // ==========================================================
 
@@ -213,7 +213,7 @@ export default function Home() {
       const data = await response.json();
 
       if (!Array.isArray(data)) {
-        throw new Error("Respuesta inválida");
+        throw new Error("Respuesta inv�lida");
       }
 
       const cleanProjects = data
@@ -287,14 +287,14 @@ export default function Home() {
 
           <div className="brandText">
             <strong>Lenin Johan</strong>
-            <span>Portafolio · Podcast</span>
+            <span>Portafolio � Podcast</span>
           </div>
         </button>
 
         <button
           className={`hamburger ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Abrir menú"
+          aria-label="Abrir men�"
         >
           <span />
           <span />
@@ -345,7 +345,7 @@ export default function Home() {
 
                 <p className="heroDescription anime-reveal">
                   Soy <strong>Lenin Johan Cojal Valle</strong>.
-                  Desarrollo páginas web, sistemas y experiencias
+                  Desarrollo p�ginas web, sistemas y experiencias
                   interactivas usando Next.js, React, GitHub y
                   Vercel.
                 </p>
@@ -355,14 +355,14 @@ export default function Home() {
                     className="mainButton"
                     onClick={() => changeSection("proyectos")}
                   >
-                    <span className="playIcon">▶</span>
+                    <span className="playIcon">?</span>
 
                     <span>
                       Ver proyectos
-                      <small>Mis últimos trabajos</small>
+                      <small>Mis �ltimos trabajos</small>
                     </span>
 
-                    <b>↗</b>
+                    <b>?</b>
                   </button>
 
                   <button
@@ -426,16 +426,16 @@ export default function Home() {
 
                       <h2>Lenin Johan Show</h2>
 
-                      <p>Frontend · Design · Development</p>
+                      <p>Frontend � Design � Development</p>
                     </div>
 
-                    <button>▶</button>
+                    <button>?</button>
                   </div>
 
                   <div className="audioPanel">
                     <div className="audioHeader">
                       <strong>
-                        Temporada 01 · Proyectos y código
+                        Temporada 01 � Proyectos y c�digo
                       </strong>
 
                       <span>
@@ -478,14 +478,14 @@ export default function Home() {
                 <span className="miniTitle">SERVICIOS</span>
 
                 <h2>
-                  Diseño, código y
+                  Dise�o, c�digo y
                   <span> creatividad.</span>
                 </h2>
 
                 <p>
                   Desarrollo experiencias digitales modernas con
-                  atención al diseño, rendimiento y adaptación a
-                  dispositivos móviles.
+                  atenci�n al dise�o, rendimiento y adaptaci�n a
+                  dispositivos m�viles.
                 </p>
               </div>
             </div>
@@ -538,7 +538,7 @@ export default function Home() {
                 </h2>
 
                 <p>
-                  Tecnologías que utilizo para construir interfaces,
+                  Tecnolog�as que utilizo para construir interfaces,
                   sistemas y proyectos web.
                 </p>
               </div>
@@ -632,7 +632,7 @@ export default function Home() {
 
               <p>
                 Los proyectos se cargan solamente cuando visitas esta
-                sección para que la página inicial abra más rápido.
+                secci�n para que la p�gina inicial abra m�s r�pido.
               </p>
             </div>
 
@@ -672,7 +672,7 @@ export default function Home() {
                         rel="noreferrer"
                       >
                         <span>{"</>"}</span>
-                        Ver código
+                        Ver c�digo
                       </a>
 
                       {project.homepage && (
@@ -682,8 +682,8 @@ export default function Home() {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <span>↗</span>
-                          Ver página
+                          <span>?</span>
+                          Ver p�gina
                         </a>
                       )}
                     </div>
@@ -712,13 +712,13 @@ export default function Home() {
                 </span>
 
                 <h2>
-                  ¿Tienes una idea?
+                  �Tienes una idea?
                   <br />
-                  <span>Hagámosla realidad.</span>
+                  <span>Hag�mosla realidad.</span>
                 </h2>
 
                 <p>
-                  Si necesitas una página web, sistema, portafolio o
+                  Si necesitas una p�gina web, sistema, portafolio o
                   quieres mejorar un proyecto existente, puedes
                   contactarme directamente.
                 </p>
@@ -736,7 +736,7 @@ export default function Home() {
                     </strong>
                   </div>
 
-                  <span>↗</span>
+                  <span>?</span>
                 </a>
 
                 <div className="contactMiniGrid">
@@ -764,11 +764,11 @@ export default function Home() {
         <strong>Lenin Johan Cojal Valle</strong>
 
         <span>
-          Diseño · Desarrollo · Creatividad
+          Dise�o � Desarrollo � Creatividad
         </span>
 
         <small>
-          © 2026 · Todos los derechos reservados
+          � 2026 � Todos los derechos reservados
         </small>
       </footer>
     </div>
