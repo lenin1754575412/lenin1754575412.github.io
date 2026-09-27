@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import anime from "animejs/lib/anime.es.js";
@@ -16,26 +16,26 @@ const menuItems = [
 const servicios = [
   {
     number: "01",
-    icon: "â—ˆ",
-    title: "PÃ¡ginas Web",
-    text: "Webs modernas, rÃ¡pidas y completamente adaptadas para celular, tablet y computadora.",
+    icon: "?",
+    title: "Páginas Web",
+    text: "Webs modernas, rápidas y completamente adaptadas para celular, tablet y computadora.",
   },
   {
     number: "02",
-    icon: "âŒ˜",
+    icon: "?",
     title: "Sistemas Web",
-    text: "Sistemas para ventas, clientes, productos, inventario, administraciÃ³n y mÃ¡s.",
+    text: "Sistemas para ventas, clientes, productos, inventario, administración y más.",
   },
   {
     number: "03",
-    icon: "â—‡",
+    icon: "?",
     title: "Portafolios",
     text: "Portafolios profesionales para mostrar proyectos, experiencia y trabajos realizados.",
   },
   {
     number: "04",
-    icon: "âœ¦",
-    title: "DiseÃ±o Responsive",
+    icon: "?",
+    title: "Diseño Responsive",
     text: "Interfaces que se adaptan correctamente a todas las resoluciones y dispositivos.",
   },
   {
@@ -46,9 +46,9 @@ const servicios = [
   },
   {
     number: "06",
-    icon: "âš¡",
-    title: "OptimizaciÃ³n",
-    text: "Mejoras de rendimiento, velocidad, diseÃ±o, carga y experiencia de usuario.",
+    icon: "?",
+    title: "Optimización",
+    text: "Mejoras de rendimiento, velocidad, diseño, carga y experiencia de usuario.",
   },
 ];
 
@@ -143,7 +143,7 @@ export default function Home() {
   }, []);
 
   // ==========================================================
-  // ANIMACIÃ“N AL CAMBIAR DE SECCIÃ“N
+  // ANIMACIÓN AL CAMBIAR DE SECCIÓN
   // PROYECTOS NO SE ANIMA NI SE MODIFICA
   // ==========================================================
 
@@ -203,7 +203,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=12`
+        `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`
       );
 
       if (!response.ok) {
@@ -213,7 +213,7 @@ export default function Home() {
       const data = await response.json();
 
       if (!Array.isArray(data)) {
-        throw new Error("Respuesta invÃ¡lida");
+        throw new Error("Respuesta inválida");
       }
 
       const cleanProjects = data
@@ -287,14 +287,14 @@ export default function Home() {
 
           <div className="brandText">
             <strong>Lenin Johan</strong>
-            <span>Portafolio Â· Podcast</span>
+            <span>Portafolio · Podcast</span>
           </div>
         </button>
 
         <button
           className={`hamburger ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Abrir menÃº"
+          aria-label="Abrir menú"
         >
           <span />
           <span />
@@ -345,7 +345,7 @@ export default function Home() {
 
                 <p className="heroDescription anime-reveal">
                   Soy <strong>Lenin Johan Cojal Valle</strong>.
-                  Desarrollo pÃ¡ginas web, sistemas y experiencias
+                  Desarrollo páginas web, sistemas y experiencias
                   interactivas usando Next.js, React, GitHub y
                   Vercel.
                 </p>
@@ -355,14 +355,14 @@ export default function Home() {
                     className="mainButton"
                     onClick={() => changeSection("proyectos")}
                   >
-                    <span className="playIcon">â–¶</span>
+                    <span className="playIcon">?</span>
 
                     <span>
                       Ver proyectos
-                      <small>Mis Ãºltimos trabajos</small>
+                      <small>Mis últimos trabajos</small>
                     </span>
 
-                    <b>â†—</b>
+                    <b>?</b>
                   </button>
 
                   <button
@@ -426,16 +426,16 @@ export default function Home() {
 
                       <h2>Lenin Johan Show</h2>
 
-                      <p>Frontend Â· Design Â· Development</p>
+                      <p>Frontend · Design · Development</p>
                     </div>
 
-                    <button>â–¶</button>
+                    <button>?</button>
                   </div>
 
                   <div className="audioPanel">
                     <div className="audioHeader">
                       <strong>
-                        Temporada 01 Â· Proyectos y cÃ³digo
+                        Temporada 01 · Proyectos y código
                       </strong>
 
                       <span>
@@ -478,14 +478,14 @@ export default function Home() {
                 <span className="miniTitle">SERVICIOS</span>
 
                 <h2>
-                  DiseÃ±o, cÃ³digo y
+                  Diseño, código y
                   <span> creatividad.</span>
                 </h2>
 
                 <p>
                   Desarrollo experiencias digitales modernas con
-                  atenciÃ³n al diseÃ±o, rendimiento y adaptaciÃ³n a
-                  dispositivos mÃ³viles.
+                  atención al diseño, rendimiento y adaptación a
+                  dispositivos móviles.
                 </p>
               </div>
             </div>
@@ -538,7 +538,7 @@ export default function Home() {
                 </h2>
 
                 <p>
-                  TecnologÃ­as que utilizo para construir interfaces,
+                  Tecnologías que utilizo para construir interfaces,
                   sistemas y proyectos web.
                 </p>
               </div>
@@ -632,7 +632,7 @@ export default function Home() {
 
               <p>
                 Los proyectos se cargan solamente cuando visitas esta
-                secciÃ³n para que la pÃ¡gina inicial abra mÃ¡s rÃ¡pido.
+                sección para que la página inicial abra más rápido.
               </p>
             </div>
 
@@ -672,7 +672,7 @@ export default function Home() {
                         rel="noreferrer"
                       >
                         <span>{"</>"}</span>
-                        Ver cÃ³digo
+                        Ver código
                       </a>
 
                       {project.homepage && (
@@ -682,8 +682,8 @@ export default function Home() {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <span>â†—</span>
-                          Ver pÃ¡gina
+                          <span>?</span>
+                          Ver página
                         </a>
                       )}
                     </div>
@@ -712,13 +712,13 @@ export default function Home() {
                 </span>
 
                 <h2>
-                  Â¿Tienes una idea?
+                  ¿Tienes una idea?
                   <br />
-                  <span>HagÃ¡mosla realidad.</span>
+                  <span>Hagámosla realidad.</span>
                 </h2>
 
                 <p>
-                  Si necesitas una pÃ¡gina web, sistema, portafolio o
+                  Si necesitas una página web, sistema, portafolio o
                   quieres mejorar un proyecto existente, puedes
                   contactarme directamente.
                 </p>
@@ -736,7 +736,7 @@ export default function Home() {
                     </strong>
                   </div>
 
-                  <span>â†—</span>
+                  <span>?</span>
                 </a>
 
                 <div className="contactMiniGrid">
@@ -764,11 +764,11 @@ export default function Home() {
         <strong>Lenin Johan Cojal Valle</strong>
 
         <span>
-          DiseÃ±o Â· Desarrollo Â· Creatividad
+          Diseño · Desarrollo · Creatividad
         </span>
 
         <small>
-          Â© 2026 Â· Todos los derechos reservados
+          © 2026 · Todos los derechos reservados
         </small>
       </footer>
     </div>
