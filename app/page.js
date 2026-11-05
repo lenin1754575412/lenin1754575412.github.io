@@ -1,776 +1,337 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
-import anime from "animejs/lib/anime.es.js";
+import "./tiktok-portfolio.css";
 
-const GITHUB_USER = "lenin1754575412";
-
-const menuItems = [
+const USER = "lenin1754575412";
+const GITHUB = `https://github.com/${USER}`;
+const SITE = "https://lenin-portafolio.vercel.app";
+const NAV = [
   ["inicio", "Inicio"],
-  ["servicios", "Servicios"],
-  ["habilidades", "Habilidades"],
+  ["sobre-mi", "Sobre mí"],
+  ["experiencia", "Experiencia"],
   ["proyectos", "Proyectos"],
   ["contacto", "Contacto"],
 ];
-
-const servicios = [
+const STACK = ["React", "Next.js", "JavaScript", "HTML5", "CSS3", "Git", "GitHub", "Vercel"];
+const WORK = [
   {
     number: "01",
-    icon: "◈",
-    title: "Páginas Web",
-    text: "Webs modernas, rápidas y completamente adaptadas para celular, tablet y computadora.",
+    title: "Desarrollo web",
+    detail: "Sitios rápidos, visuales y adaptados a cualquier pantalla.",
+    tag: "WEB & FRONTEND",
   },
   {
     number: "02",
-    icon: "⌘",
-    title: "Sistemas Web",
-    text: "Sistemas para ventas, clientes, productos, inventario, administración y más.",
+    title: "Sistemas digitales",
+    detail: "Interfaces útiles para organizar productos, usuarios y procesos.",
+    tag: "APLICACIONES",
   },
   {
     number: "03",
-    icon: "◇",
-    title: "Portafolios",
-    text: "Portafolios profesionales para mostrar proyectos, experiencia y trabajos realizados.",
+    title: "Diseño interactivo",
+    detail: "Microinteracciones, movimiento y experiencias memorables.",
+    tag: "UI / UX",
   },
+];
+const FALLBACK = [
   {
-    number: "04",
-    icon: "✦",
-    title: "Diseño Responsive",
-    text: "Interfaces que se adaptan correctamente a todas las resoluciones y dispositivos.",
-  },
-  {
-    number: "05",
-    icon: "</>",
-    title: "Desarrollo",
-    text: "Proyectos desarrollados con React, Next.js, JavaScript, HTML y CSS.",
-  },
-  {
-    number: "06",
-    icon: "⚡",
-    title: "Optimización",
-    text: "Mejoras de rendimiento, velocidad, diseño, carga y experiencia de usuario.",
+    id: "portfolio",
+    name: "lenin1754575412.github.io",
+    description: "Mi portafolio personal desarrollado con Next.js y React.",
+    html_url: `${GITHUB}/lenin1754575412.github.io`,
+    homepage: SITE,
+    language: "JavaScript",
+    topics: ["portfolio", "nextjs"],
   },
 ];
 
-const skills = [
-  { name: "HTML", level: 94 },
-  { name: "CSS", level: 92 },
-  { name: "JavaScript", level: 88 },
-  { name: "React", level: 86 },
-  { name: "Next.js", level: 90 },
-  { name: "GitHub", level: 85 },
-  { name: "Vercel", level: 88 },
-  { name: "Responsive UI", level: 93 },
-];
-
-const fallbackProjects = [
-  {
-    id: 1,
-    name: "Portafolio Personal",
-    description: "Portafolio profesional desarrollado con Next.js.",
-    html_url:
-      "https://github.com/lenin1754575412/lenin1754575412.github.io",
-    homepage:
-      "https://lenin1754575412.github.io",
-    language: "Next.js",
-  },
-];
-
-const waveBars = [
-  48, 78, 60, 90, 54, 73, 40, 86, 63, 95,
-  47, 71, 88, 52, 76, 43, 91, 66, 82, 56,
-];
-
-export default function Home() {
-  const rootRef = useRef(null);
-
-  const [section, setSection] = useState("inicio");
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const [projects, setProjects] = useState(null);
-  const [loadingProjects, setLoadingProjects] = useState(false);
-
-  // ==========================================================
-  // ANIMACIONES DE FONDO
-  // ==========================================================
+function Starfield() {
+  const ref = useRef(null);
 
   useEffect(() => {
-    if (!rootRef.current) return;
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+    const motionOff = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+    let raf = 0;
+    let stars = [];
+    let width = 0;
+    let height = 0;
+    const mouse = { x: 0, y: 0 };
 
-    const reduceMotion =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduceMotion) return;
-
-    const isMobile = window.innerWidth <= 760;
-
-    if (!isMobile) {
-      anime({
-        targets: ".anime-dot",
-        translateY: () => anime.random(-40, 40),
-        translateX: () => anime.random(-25, 25),
-        scale: () => anime.random(8, 14) / 10,
-        opacity: [0.2, 0.75],
-        delay: anime.stagger(180),
-        duration: () => anime.random(3500, 6500),
-        direction: "alternate",
-        easing: "easeInOutSine",
-        loop: true,
-      });
-
-      anime({
-        targets: ".anime-ring-one",
-        rotate: 360,
-        duration: 18000,
-        easing: "linear",
-        loop: true,
-      });
-
-      anime({
-        targets: ".anime-ring-two",
-        rotate: -360,
-        duration: 24000,
-        easing: "linear",
-        loop: true,
-      });
+    function resize() {
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      const count = Math.min(220, Math.max(90, Math.floor((width * height) / 5900)));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 1.45 + 0.25,
+        depth: Math.random() * 1.5 + 0.25,
+        phase: Math.random() * Math.PI * 2,
+      }));
+      draw();
     }
 
+    function move(event) {
+      mouse.x = (event.clientX / Math.max(width, 1) - 0.5) * 25;
+      mouse.y = (event.clientY / Math.max(height, 1) - 0.5) * 25;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      for (const star of stars) {
+        const twinkle = motionOff ? 0.7 : 0.55 + 0.45 * Math.sin(frame * 0.012 * star.depth + star.phase);
+        const x = star.x + mouse.x * star.depth;
+        const y = star.y + mouse.y * star.depth;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(220,231,255,${0.25 + 0.62 * twinkle})`;
+        ctx.arc(x, y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (!motionOff) {
+        frame += 1;
+        raf = window.requestAnimationFrame(draw);
+      }
+    }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    if (!motionOff) window.addEventListener("pointermove", move, { passive: true });
     return () => {
-      anime.remove(".anime-dot");
-      anime.remove(".anime-ring-one");
-      anime.remove(".anime-ring-two");
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", move);
     };
   }, []);
 
-  // ==========================================================
-  // ANIMACIÓN AL CAMBIAR DE SECCIÓN
-  // PROYECTOS NO SE ANIMA NI SE MODIFICA
-  // ==========================================================
+  return <canvas ref={ref} className="lp-stars" aria-hidden="true" />;
+}
+
+function Arrow({ diagonal = false }) {
+  return <span aria-hidden="true" className="lp-arrow">{diagonal ? "↗" : "→"}</span>;
+}
+
+function ProjectCard({ project, index }) {
+  const title = project.name.replaceAll("-", " ").replaceAll("_", " ");
+  const tags = [project.language, ...(project.topics || []).slice(0, 2)].filter(Boolean);
+  const url = project.html_url || GITHUB;
+  const isLive = typeof project.homepage === "string" && /^https?:\/\//.test(project.homepage);
+
+  return (
+    <article className="lp-project lp-reveal">
+      <div className={`lp-project-art lp-art-${index % 3}`} aria-hidden="true">
+        <div className="lp-art-grid" />
+        <div className="lp-art-window">
+          <div className="lp-art-window-top"><i /><i /><i /><span>PROJECT / {String(index + 1).padStart(2, "0")}</span></div>
+          <div className="lp-art-window-body">
+            <div className="lp-art-line lp-art-line-short" />
+            <div className="lp-art-line lp-art-line-wide" />
+            <div className="lp-art-line" />
+            <div className="lp-art-tiles"><b /><b /><b /></div>
+          </div>
+        </div>
+        <span className="lp-art-count">0{index + 1}</span>
+      </div>
+      <div className="lp-project-content">
+        <div className="lp-project-category">PROYECTO DESTACADO / {String(index + 1).padStart(2, "0")}</div>
+        <h3>{title}</h3>
+        <p>{project.description || "Desarrollo y experimentación con tecnología web."}</p>
+        <div className="lp-project-tags">{tags.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}</div>
+        <div className="lp-project-links">
+          <a href={url} target="_blank" rel="noopener noreferrer">Código <Arrow diagonal /></a>
+          {isLive && <a href={project.homepage} target="_blank" rel="noopener noreferrer">Ver sitio <Arrow diagonal /></a>}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [projects, setProjects] = useState(FALLBACK);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   useEffect(() => {
-    if (section === "proyectos") return;
-
-    const reduceMotion =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduceMotion) return;
-
-    const elements = document.querySelectorAll(
-      `[data-current="${section}"] .anime-reveal`
-    );
-
-    anime.remove(elements);
-
-    anime({
-      targets: elements,
-      opacity: [0, 1],
-      translateY: [28, 0],
-      scale: [0.985, 1],
-      delay: anime.stagger(80),
-      duration: 650,
-      easing: "easeOutExpo",
-    });
-  }, [section]);
-
-  // ==========================================================
-  // HABILIDADES
-  // ==========================================================
+    const controller = new AbortController();
+    fetch(`https://api.github.com/users/${USER}/repos?sort=updated&per_page=100`, {
+      signal: controller.signal,
+      headers: { Accept: "application/vnd.github+json" },
+    })
+      .then((response) => { if (!response.ok) throw new Error("GitHub no disponible"); return response.json(); })
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const selected = data
+          .filter((repo) => !repo.fork && !repo.archived)
+          .sort((a, b) => Number(b.stargazers_count || 0) - Number(a.stargazers_count || 0))
+          .slice(0, 6);
+        if (selected.length) setProjects(selected);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
-    if (section !== "habilidades") return;
-
-    const timeout = setTimeout(() => {
-      anime({
-        targets: ".skillFill",
-        width: (el) => el.dataset.level + "%",
-        duration: 1100,
-        delay: anime.stagger(100),
-        easing: "easeOutExpo",
+    const elements = document.querySelectorAll(".lp-reveal");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || !("IntersectionObserver" in window)) {
+      elements.forEach((el) => el.classList.add("lp-visible"));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) { entry.target.classList.add("lp-visible"); observer.unobserve(entry.target); }
       });
-    }, 100);
+    }, { threshold: 0.09, rootMargin: "0px 0px -45px 0px" });
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [projects]);
 
-    return () => clearTimeout(timeout);
-  }, [section]);
-
-  // ==========================================================
-  // CARGAR PROYECTOS
-  // ==========================================================
-
-  async function loadProjects() {
-    if (projects || loadingProjects) return;
-
-    setLoadingProjects(true);
-
-    try {
-      const response = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`
-      );
-
-      if (!response.ok) {
-        throw new Error("No se pudieron cargar los proyectos");
-      }
-
-      const data = await response.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("Respuesta inválida");
-      }
-
-      const cleanProjects = data
-        .filter((project) => !project.fork)
-        .map((project) => ({
-          id: project.id,
-          name: project.name,
-          description:
-            project.description || "Proyecto publicado en GitHub.",
-          html_url: project.html_url,
-          homepage: project.homepage || "",
-          language: project.language || "GitHub",
-        }));
-
-      setProjects(
-        cleanProjects.length ? cleanProjects : fallbackProjects
-      );
-    } catch (error) {
-      setProjects(fallbackProjects);
-    } finally {
-      setLoadingProjects(false);
-    }
-  }
-
-  function changeSection(nextSection) {
-    setSection(nextSection);
-    setMenuOpen(false);
-
-    if (nextSection === "proyectos") {
-      loadProjects();
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  function submitContact(event) {
+    event.preventDefault();
+    const title = `Contacto desde portafolio - ${form.name}`;
+    const body = `Nombre: ${form.name}\nCorreo: ${form.email}\n\nMensaje:\n${form.message}`;
+    const link = `${GITHUB}/lenin1754575412.github.io/issues/new?${new URLSearchParams({ title, body })}`;
+    window.open(link, "_blank", "noopener,noreferrer");
   }
 
   return (
-    <div ref={rootRef} className="site">
-      {/* FONDO ANIMADO */}
-
-      <div className="ambient" aria-hidden="true">
-        <div className="ambientGlow glowOne" />
-        <div className="ambientGlow glowTwo" />
-
-        <span className="anime-dot dot1" />
-        <span className="anime-dot dot2" />
-        <span className="anime-dot dot3" />
-        <span className="anime-dot dot4" />
-        <span className="anime-dot dot5" />
-      </div>
-
-      {/* HEADER */}
-
-      <header className="header">
-        <button
-          className="brand"
-          onClick={() => changeSection("inicio")}
-        >
-          <div className="logoWrap">
-            <img
-              src="/logo.svg"
-              alt="Lenin Johan"
-              width="55"
-              height="55"
-            />
-
-            <span className="onlineDot" />
-          </div>
-
-          <div className="brandText">
-            <strong>Lenin Johan</strong>
-            <span>Portafolio · Podcast</span>
-          </div>
-        </button>
-
-        <button
-          className={`hamburger ${menuOpen ? "active" : ""}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Abrir menú"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-
-        <nav className={`nav ${menuOpen ? "open" : ""}`}>
-          {menuItems.map(([id, label]) => (
-            <button
-              key={id}
-              className={section === id ? "active" : ""}
-              onClick={() => changeSection(id)}
-            >
-              {label}
-            </button>
-          ))}
+    <div className="lp-page">
+      <Starfield />
+      <div className="lp-grain" aria-hidden="true" />
+      <header className="lp-header">
+        <a className="lp-brand" href="#inicio" onClick={() => setMenuOpen(false)} aria-label="Volver al inicio">
+          <span className="lp-brand-symbol">L<span>.</span></span>
+          <span className="lp-brand-name">LENIN COJAL <small>CREATIVE DEVELOPER</small></span>
+        </a>
+        <nav className={`lp-nav ${menuOpen ? "lp-nav-open" : ""}`} aria-label="Navegación principal">
+          {NAV.map(([id, label]) => <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}</a>)}
         </nav>
+        <a className="lp-header-cta" href="#contacto">Hablemos <Arrow diagonal /></a>
+        <button className="lp-menu-toggle" type="button" aria-expanded={menuOpen} aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} onClick={() => setMenuOpen(!menuOpen)}>
+          <span /><span />
+        </button>
       </header>
 
       <main>
-        {/* ====================================================
-            INICIO
-        ==================================================== */}
+                        <section className="lp-hero lp-hero-rebuild lp-premium" id="inicio">
+          <div className="lp01-grid" aria-hidden="true" />
+          <div className="lp01-light" aria-hidden="true" />
 
-        {section === "inicio" && (
-          <section
-            className="homeHero"
-            data-current="inicio"
-          >
-            <div className="heroGrid">
-              <div className="heroContent">
-                <div className="statusBadge anime-reveal">
-                  <span className="pulseDot" />
-                  Disponible para nuevos proyectos
-                </div>
-
-                <div className="heroEyebrow anime-reveal">
-                  PORTAFOLIO DIGITAL / 2026
-                </div>
-
-                <h1 className="anime-reveal">
-                  Creo experiencias
-                  <span> digitales</span>
-                  <br />
-                  que se sienten
-                  <em> vivas.</em>
-                </h1>
-
-                <p className="heroDescription anime-reveal">
-                  Soy <strong>Lenin Johan Cojal Valle</strong>.
-                  Desarrollo páginas web, sistemas y experiencias
-                  interactivas usando Next.js, React, GitHub y
-                  Vercel.
-                </p>
-
-                <div className="heroActions anime-reveal">
-                  <button
-                    className="mainButton"
-                    onClick={() => changeSection("proyectos")}
-                  >
-                    <span className="playIcon">▶</span>
-
-                    <span>
-                      Ver proyectos
-                      <small>Mis últimos trabajos</small>
-                    </span>
-
-                    <b>↗</b>
-                  </button>
-
-                  <button
-                    className="outlineButton"
-                    onClick={() => changeSection("contacto")}
-                  >
-                    Contactarme
-                  </button>
-                </div>
-
-                <div className="miniStats anime-reveal">
-                  <div>
-                    <strong>12+</strong>
-                    <span>Proyectos</span>
-                  </div>
-
-                  <i />
-
-                  <div>
-                    <strong>Next.js</strong>
-                    <span>Framework</span>
-                  </div>
-
-                  <i />
-
-                  <div>
-                    <strong>100%</strong>
-                    <span>Responsive</span>
-                  </div>
-                </div>
+          <div className="lpx-layout">
+            <div className="lpx-left">
+              <div className="lpx-eyebrow">
+                <span className="lpx-dot" />
+                PORTAFOLIO DIGITAL / 2026
+                <span className="lpx-rule" />
               </div>
 
-              <div className="visualSide anime-reveal">
-                <div className="visualCard">
-                  <div className="visualTop">
-                    <span>
-                      <i />
-                      LIVE SYSTEM
-                    </span>
+              <h1 className="lpx-heading">
+                <span>DESARROLLANDO</span>
+                <span className="lpx-stroke">EXPERIENCIAS</span>
+                <span className="lpx-blue">DIGITALES</span>
+                <span className="lpx-last">PARA EL FUTURO<span className="lpx-period">.</span></span>
+              </h1>
 
-                    <small>01 / 06</small>
-                  </div>
-
-                  <div className="orbStage">
-                    <div className="anime-ring-one orbitRing ringOne" />
-                    <div className="anime-ring-two orbitRing ringTwo" />
-
-                    <div className="orbGlow" />
-
-                    <div className="mainOrb">
-                      <div className="orbInside" />
-                    </div>
-
-                    <div className="orbitDot orbitDotOne" />
-                    <div className="orbitDot orbitDotTwo" />
-                  </div>
-
-                  <div className="showInfo">
-                    <div>
-                      <small>NOW PLAYING</small>
-
-                      <h2>Lenin Johan Show</h2>
-
-                      <p>Frontend · Design · Development</p>
-                    </div>
-
-                    <button>▶</button>
-                  </div>
-
-                  <div className="audioPanel">
-                    <div className="audioHeader">
-                      <strong>
-                        Temporada 01 · Proyectos y código
-                      </strong>
-
-                      <span>
-                        <i />
-                        EN VIVO
-                      </span>
-                    </div>
-
-                    <div className="wave">
-                      {waveBars.map((height, index) => (
-                        <b
-                          key={index}
-                          style={{
-                            "--bar-height": `${height}%`,
-                            "--delay": `${index * 0.04}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ====================================================
-            SERVICIOS
-        ==================================================== */}
-
-        {section === "servicios" && (
-          <section
-            className="animatedSection"
-            data-current="servicios"
-          >
-            <div className="sectionTop anime-reveal">
-              <span className="sectionNumber">01</span>
-
-              <div>
-                <span className="miniTitle">SERVICIOS</span>
-
-                <h2>
-                  Diseño, código y
-                  <span> creatividad.</span>
-                </h2>
-
-                <p>
-                  Desarrollo experiencias digitales modernas con
-                  atención al diseño, rendimiento y adaptación a
-                  dispositivos móviles.
-                </p>
-              </div>
-            </div>
-
-            <div className="servicesGrid">
-              {servicios.map((service) => (
-                <article
-                  className="serviceCard anime-reveal"
-                  key={service.title}
-                >
-                  <div className="serviceTop">
-                    <span className="serviceNumber">
-                      {service.number}
-                    </span>
-
-                    <div className="serviceIcon">
-                      {service.icon}
-                    </div>
-                  </div>
-
-                  <h3>{service.title}</h3>
-
-                  <p>{service.text}</p>
-
-                  <div className="serviceLine" />
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ====================================================
-            HABILIDADES
-        ==================================================== */}
-
-        {section === "habilidades" && (
-          <section
-            className="animatedSection"
-            data-current="habilidades"
-          >
-            <div className="sectionTop anime-reveal">
-              <span className="sectionNumber">02</span>
-
-              <div>
-                <span className="miniTitle">STACK</span>
-
-                <h2>
-                  Herramientas que
-                  <span> utilizo.</span>
-                </h2>
-
-                <p>
-                  Tecnologías que utilizo para construir interfaces,
-                  sistemas y proyectos web.
-                </p>
-              </div>
-            </div>
-
-            <div className="skillsArea">
-              <div className="skillsList">
-                {skills.map((skill, index) => (
-                  <article
-                    className="skillItem anime-reveal"
-                    key={skill.name}
-                  >
-                    <div className="skillInfo">
-                      <span>
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-
-                      <strong>{skill.name}</strong>
-
-                      <em>{skill.level}%</em>
-                    </div>
-
-                    <div className="skillTrack">
-                      <div
-                        className="skillFill"
-                        data-level={skill.level}
-                      />
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              <div className="techPanel anime-reveal">
-                <div className="terminalTop">
-                  <span />
-                  <span />
-                  <span />
-
-                  <p>portfolio.js</p>
-                </div>
-
-                <div className="terminalCode">
-                  <p>
-                    <span>const</span> developer = {"{"}
-                  </p>
-
-                  <p>
-                    &nbsp;&nbsp;name:
-                    <em> "Lenin Johan"</em>,
-                  </p>
-
-                  <p>
-                    &nbsp;&nbsp;frontend:
-                    <em> true</em>,
-                  </p>
-
-                  <p>
-                    &nbsp;&nbsp;responsive:
-                    <em> true</em>,
-                  </p>
-
-                  <p>
-                    &nbsp;&nbsp;creative:
-                    <em> true</em>
-                  </p>
-
-                  <p>{"};"}</p>
-
-                  <div className="terminalCursor">
-                    _
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ====================================================
-            PROYECTOS
-            SE MANTIENE SIN ANIMACIONES Y CON LOS DOS BOTONES
-        ==================================================== */}
-
-        {section === "proyectos" && (
-          <section className="contentSection">
-            <div className="sectionHeader">
-              <span className="miniTitle">PROYECTOS</span>
-
-              <h2>
-                Proyectos de <span>GitHub.</span>
-              </h2>
-
-              <p>
-                Los proyectos se cargan solamente cuando visitas esta
-                sección para que la página inicial abra más rápido.
+              <p className="lpx-description">
+                Desarrollo soluciones web modernas, creativas y
+                funcionales que convierten ideas en experiencias
+                digitales reales, escalables y con impacto.
               </p>
-            </div>
 
-            {loadingProjects && (
-              <div className="loading">
-                <span />
-                Cargando proyectos...
-              </div>
-            )}
-
-            {!loadingProjects && projects && (
-              <div className="projectsGrid">
-                {projects.map((project) => (
-                  <article
-                    className="projectCard"
-                    key={project.id}
-                  >
-                    <div className="projectTop">
-                      <div className="projectNumber">
-                        {"</>"}
-                      </div>
-
-                      <span className="language">
-                        {project.language}
-                      </span>
-                    </div>
-
-                    <h3>{project.name}</h3>
-
-                    <p>{project.description}</p>
-
-                    <div className="projectActions">
-                      <a
-                        className="projectButton codeButton"
-                        href={project.html_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <span>{"</>"}</span>
-                        Ver código
-                      </a>
-
-                      {project.homepage && (
-                        <a
-                          className="projectButton pageButton"
-                          href={project.homepage}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <span>↗</span>
-                          Ver página
-                        </a>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* ====================================================
-            CONTACTO
-        ==================================================== */}
-
-        {section === "contacto" && (
-          <section
-            className="contactNew"
-            data-current="contacto"
-          >
-            <div className="contactGlow" />
-
-            <div className="contactContent">
-              <div className="anime-reveal">
-                <span className="miniTitle">
-                  CONTACTO / 04
-                </span>
-
-                <h2>
-                  ¿Tienes una idea?
-                  <br />
-                  <span>Hagámosla realidad.</span>
-                </h2>
-
-                <p>
-                  Si necesitas una página web, sistema, portafolio o
-                  quieres mejorar un proyecto existente, puedes
-                  contactarme directamente.
-                </p>
-              </div>
-
-              <div className="contactActions anime-reveal">
-                <a
-                  className="bigMail"
-                  href="mailto:cojalvallelenin919@gmail.com"
-                >
-                  <div>
-                    <small>ENVIAR MENSAJE</small>
-                    <strong>
-                      cojalvallelenin919@gmail.com
-                    </strong>
-                  </div>
-
-                  <span>↗</span>
+              <div className="lpx-actions">
+                <a className="lpx-button lpx-button-main" href="#proyectos">
+                  EXPLORAR PROYECTOS <span>↗</span>
                 </a>
-
-                <div className="contactMiniGrid">
-                  <div>
-                    <small>NOMBRE</small>
-                    <strong>
-                      Lenin Johan Cojal Valle
-                    </strong>
-                  </div>
-
-                  <div>
-                    <small>GITHUB</small>
-                    <strong>
-                      @{GITHUB_USER}
-                    </strong>
-                  </div>
-                </div>
+                <a className="lpx-button lpx-button-alt" href="#contacto">
+                  HABLEMOS <span>→</span>
+                </a>
               </div>
             </div>
-          </section>
-        )}
+
+            <div className="lpx-scene">
+              <div className="lpx-aura" aria-hidden="true" />
+              <div className="lpx-halo" aria-hidden="true" />
+              <div className="lpx-ring lpx-ring-one" aria-hidden="true" />
+              <div className="lpx-ring lpx-ring-two" aria-hidden="true" />
+              <div className="lpx-ring lpx-ring-three" aria-hidden="true" />
+
+              <div className="lpx-person">
+                <img
+                  src="/perfil-transparente.png"
+                  alt="Lenin Johan Cojal Valle"
+                />
+              </div>
+
+              <div className="lpx-orbit-front" aria-hidden="true" />
+              <div className="lpx-platform" aria-hidden="true" />
+
+              <div className="lpx-tech lpx-tech-one">
+                &lt;/&gt; &nbsp; WEB DEVELOPMENT
+              </div>
+              <div className="lpx-tech lpx-tech-two">
+                ◈ &nbsp; NEXT.JS / REACT
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="lp-section lp-about" id="sobre-mi">
+          <div className="lp-section-overline lp-reveal"><span>01 / SOBRE MÍ</span><span>UNA FORMA DIFERENTE DE CREAR</span></div>
+          <div className="lp-about-grid">
+            <div className="lp-reveal"><p className="lp-small-caption">HOLA, SOY LENIN</p><h2>Las buenas ideas merecen <em>una gran experiencia.</em></h2></div>
+            <div className="lp-about-copy lp-reveal"><p>Me interesa desarrollar productos digitales que combinen una estética cuidada con una experiencia de uso clara, rápida e intuitiva.</p><p>Trabajo con tecnologías web modernas, desde la primera idea hasta su publicación, prestando atención a cada detalle.</p><a className="lp-text-link" href={GITHUB} target="_blank" rel="noopener noreferrer">EXPLORAR MI GITHUB <Arrow diagonal /></a></div>
+          </div>
+          <div className="lp-stack lp-reveal"><span className="lp-stack-label">TECNOLOGÍAS /</span>{STACK.map((item) => <span className="lp-stack-item" key={item}>{item}</span>)}</div>
+        </section>
+
+        <section className="lp-section lp-services" id="experiencia">
+          <div className="lp-section-overline lp-reveal"><span>02 / EXPERIENCIA EN PROYECTOS</span><span>LO QUE HAGO</span></div>
+          <div className="lp-section-heading lp-reveal"><p className="lp-small-caption">MI ENFOQUE</p><h2>Diseño. Código.<br /><em>Resultados.</em></h2></div>
+          <div className="lp-work-list">
+            {WORK.map((item) => <article key={item.number} className="lp-work-item lp-reveal"><span className="lp-work-number">{item.number}</span><div><span className="lp-work-tag">{item.tag}</span><h3>{item.title}</h3><p>{item.detail}</p></div><span className="lp-work-arrow"><Arrow diagonal /></span></article>)}
+          </div>
+        </section>
+
+        <section className="lp-section lp-projects-section" id="proyectos">
+          <div className="lp-section-overline lp-reveal"><span>03 / PROYECTOS</span><span>TRABAJOS DESARROLLADOS</span></div>
+          <div className="lp-section-heading lp-reveal"><p className="lp-small-caption">SELECCIÓN DE PROYECTOS</p><h2>Cosas que he<br /><em>construido.</em></h2><p className="lp-projects-description">Proyectos públicos obtenidos de mi cuenta de GitHub. Cada tarjeta tiene enlace a su repositorio.</p></div>
+          <div className="lp-project-grid">{projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} />)}</div>
+          {loading && <p className="lp-project-status">Actualizando proyectos desde GitHub...</p>}
+          <div className="lp-center lp-reveal"><a href={`${GITHUB}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="lp-outline-btn">VER TODOS LOS REPOSITORIOS <Arrow diagonal /></a></div>
+        </section>
+
+        <section className="lp-contact" id="contacto">
+          <div className="lp-contact-inner">
+            <div className="lp-section-overline lp-reveal"><span>04 / CONTACTO</span><span>HAGAMOS ALGO BUENO</span></div>
+            <p className="lp-small-caption lp-reveal">¿TIENES UN PROYECTO EN MENTE?</p>
+            <h2 className="lp-reveal">HABLE<span>MOS</span><span className="lp-period">.</span></h2>
+            <div className="lp-contact-grid">
+              <div className="lp-contact-copy lp-reveal"><p>Una buena conversación es el comienzo de algo extraordinario.</p><div className="lp-contact-details"><a href={GITHUB} target="_blank" rel="noopener noreferrer">GITHUB <Arrow diagonal /></a><a href={SITE} target="_blank" rel="noopener noreferrer">PORTAFOLIO ONLINE <Arrow diagonal /></a></div></div>
+              <form className="lp-contact-form lp-reveal" onSubmit={submitContact}>
+                <label>Tu nombre<input required maxLength={80} type="text" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="¿Cómo te llamas?" /></label>
+                <label>Tu correo<input required maxLength={120} type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="nombre@correo.com" /></label>
+                <label>Cuéntame tu idea<textarea required maxLength={2000} rows={3} value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} placeholder="Escribe tu mensaje..." /></label>
+                <button type="submit">CONTINUAR EN GITHUB <Arrow diagonal /></button>
+                <p className="lp-form-note">Se abrirá GitHub para publicar tu mensaje como una incidencia. Necesitas iniciar sesión allí; aquí no se almacenan los datos.</p>
+              </form>
+            </div>
+          </div>
+        </section>
       </main>
-
-      <footer className="footer">
-        <strong>Lenin Johan Cojal Valle</strong>
-
-        <span>
-          Diseño · Desarrollo · Creatividad
-        </span>
-
-        <small>
-          © 2026 · Todos los derechos reservados
-        </small>
-      </footer>
+      <footer className="lp-footer"><span>© {new Date().getFullYear()} LENIN JOHAN COJAL VALLE</span><span>DISEÑADO CON CÓDIGO Y DETALLE</span><a href="#inicio">VOLVER ARRIBA ↑</a></footer>
+      <div className="lp-dock" aria-label="Accesos rápidos"><a href="#inicio" title="Inicio" aria-label="Inicio">⌂</a><a href="#proyectos" title="Proyectos" aria-label="Proyectos">▦</a><a href={GITHUB} target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub">GH</a><a href="#contacto" title="Contacto" aria-label="Contacto">✉</a></div>
     </div>
   );
 }
